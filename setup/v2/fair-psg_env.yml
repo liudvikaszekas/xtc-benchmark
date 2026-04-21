@@ -1,0 +1,22 @@
+name: fair-psg
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - scipy
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pillow
+  - tqdm
+  - pyyaml
+  - networkx
+  - tensorboard
+  - timm
+  - transformers>=4.49
+  - sentencepiece
+  - accelerate
+  - pydantic>=2

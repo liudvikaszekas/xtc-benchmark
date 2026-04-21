@@ -1,0 +1,28 @@
+{
+  "_comment": "Quickstart sequential config (JanusPro only, no SLURM fields used). Assumes you run commands from benchmark/.",
+  "images": "datasets/xtc-dataset/gt-1000-coco/images",
+  "gt_dataset": "datasets/xtc-dataset/gt-1000-coco",
+  "output_dir": "outputs/run_1000_coco",
+  "models": [
+    "januspro"
+  ],
+  "steps": "8-19",
+  "llm_clean_refine": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "llm_attributes": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "llm_prompt": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "llm_judge": "Qwen/Qwen2.5-7B-Instruct",
+  "num_gpus": 1,
+  "judge_num_gpus": 1,
+  "save_logs": true,
+  "refine_objects": true,
+  "refine_sentences": false,
+  "psg_meta_path": "configs/psg_metadata.json",
+  "kmax_path": "submodules/kmax-deeplab",
+  "kmax_config_path": "scripts/pipeline/segmentation/config/kmax_convnext_large.yaml",
+  "kmax_weights_path": "weights/kmax_convnext_large.pth",
+  "psg_model_dir": "weights/models/masks-loc-sem",
+  "category_mapping_path": "configs/updated_category_mapping.json",
+  "vqa_metadata_path": "configs/vqa_metadata.json",
+  "vqa_synonyms_path": "configs/vqa_synonyms.json",
+  "vqa_templates_dir": "scripts/evaluation/question_generation/templates"
+}

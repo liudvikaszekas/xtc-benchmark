@@ -1,0 +1,9 @@
+[submodule "submodules/panoptic-scene-graph-generation"]
+	path = submodules/panoptic-scene-graph-generation
+	url = https://github.com/lorjul/panoptic-scene-graph-generation.git
+[submodule "submodules/kmax-deeplab"]
+	path = submodules/kmax-deeplab
+	url = https://github.com/bytedance/kmax-deeplab.git
+[submodule "submodules/univlm"]
+	path = submodules/univlm
+	url = https://github.com/weixingW/univlm

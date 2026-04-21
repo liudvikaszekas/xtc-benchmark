@@ -1,0 +1,216 @@
+{
+  "_comment": "Template config for reproducing the benchmark. Replace ALL <...> placeholders before running.",
+
+  "conda_init_script": "source <PATH_TO_MINICONDA>/bin/activate",
+
+  "env_vars": {
+    "HF_TOKEN": "<YOUR_HF_TOKEN_IF_NEEDED>"
+  },
+
+  "segmentation": {
+    "img_dir_gt": "<ABS_PATH_TO_INPUT_IMAGES_DIR>",
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_SLURM_PARTITION>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT_EG_GPU_SKU:A100>",
+      "gpus": 1,
+      "mem": "32G",
+      "time": "32:00:00",
+      "conda_env": "<CONDA_ENV_WITH_KMAX_DEEPLAB>"
+    },
+    "kmax_config": {
+      "path": "benchmark/submodules/kmax-deeplab",
+      "config": "benchmark/scripts/pipeline/segmentation/config/kmax_convnext_large.yaml",
+      "weights": "benchmark/weights/kmax_convnext_large.pth"
+    }
+  },
+
+  "scene_graph_generation": {
+    "img_dir_gt": "<ABS_PATH_TO_INPUT_IMAGES_DIR>",
+    "model_dir": "<ABS_PATH_TO_MASKS_LOC_SEM_MODEL_DIR>",
+    "skip_segmentation": true,
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_SLURM_PARTITION>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "32G",
+      "time": "32:00:00",
+      "conda_env": "<CONDA_ENV_WITH_FAIR_PSG>"
+    }
+  },
+
+  "clean_and_refine_relations": {
+    "img_dir_gt": "<ABS_PATH_TO_INPUT_IMAGES_DIR>",
+    "psg_meta_path": "benchmark/configs/psg_metadata.json",
+    "model": "<VLM_MODEL_FOR_RELATION_REFINEMENT_EG_Qwen/Qwen3-VL-32B-Instruct>",
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT_FOR_LARGE_JOBS>",
+      "partition": "<YOUR_SLURM_PARTITION_FOR_LARGE_JOBS>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT_EG_GPU_SKU:H100>",
+      "gpus": 1,
+      "mem": "200G",
+      "time": "96:00:00",
+      "conda_env": "<CONDA_ENV_WITH_VLLM_OR_INFERENCE_STACK>"
+    }
+  },
+
+  "graph_merging": {
+    "padding": 10,
+    "min_group_size": 3,
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_CPU_PARTITION>",
+      "mem": "64G",
+      "time": "16:00:00",
+      "conda_env": "<CONDA_ENV_FOR_GRAPH_MERGING>"
+    }
+  },
+
+  "attribute_generation": {
+    "img_dir_gt": "<ABS_PATH_TO_INPUT_IMAGES_DIR>",
+    "model": "<VLM_MODEL_FOR_ATTRIBUTE_EXTRACTION_EG_Qwen/Qwen3-VL-32B-Instruct>",
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT_FOR_LARGE_JOBS>",
+      "partition": "<YOUR_SLURM_PARTITION_FOR_LARGE_JOBS>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "200G",
+      "time": "96:00:00",
+      "conda_env": "<CONDA_ENV_WITH_VLLM_OR_INFERENCE_STACK>"
+    }
+  },
+
+  "prompt_generation": {
+    "refine_objects": true,
+    "refine_sentences": true,
+    "llm": {
+      "model": "<LLM_OR_VLM_FOR_PROMPT_REFINEMENT>",
+      "num_gpus": 1,
+      "conda_env": "<CONDA_ENV_WITH_PROMPT_MODEL_RUNTIME>"
+    },
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT_FOR_LARGE_JOBS>",
+      "partition": "<YOUR_SLURM_PARTITION_FOR_LARGE_JOBS>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "200G",
+      "time": "96:00:00",
+      "conda_env": "<CONDA_ENV_WITH_PROMPT_PIPELINE_DEPS>"
+    }
+  },
+
+  "image_generation": {
+    "model_paths": {
+      "blip3o": "<ABS_PATH_OR_HF_ID_FOR_BLIP3O_MODEL>",
+      "showo": "<HF_ID_OR_LOCAL_PATH_FOR_SHOWO>",
+      "showo2": "<HF_ID_OR_LOCAL_PATH_FOR_SHOWO2>"
+    },
+    "config_paths": {
+      "showo": "<ABS_PATH_TO_SHOWO_CONFIG_YAML>",
+      "showo2": "<ABS_PATH_TO_SHOWO2_CONFIG_YAML>"
+    },
+    "model_splits": {
+      "showo2": 1,
+      "mmada": 1,
+      "showo": 1,
+      "januspro": 1,
+      "blip3o": 1,
+      "omnigen2": 1,
+      "bagel": 1,
+      "tar": 1,
+      "unitok": 1
+    },
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_GPU_PARTITION>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "40G",
+      "time": "96:00:00",
+      "conda_env": "<CONDA_ENV_WITH_UNIVLM>"
+    }
+  },
+
+  "image_evaluation": {
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_GPU_PARTITION>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "64G",
+      "time": "4:00:00",
+      "conda_env": "<CONDA_ENV_WITH_EVAL_DEPS>"
+    }
+  },
+
+  "evaluation": {
+    "run_vqa": true,
+    "run_sg_judge": true,
+    "batch_size": 1,
+    "vqa_splits": {
+      "showo2": 1,
+      "mmada": 1,
+      "showo": 1,
+      "januspro": 1,
+      "blip3o": 1,
+      "omnigen2": 1,
+      "bagel": 1,
+      "unitok": 1,
+      "tar": 1
+    },
+    "llm_judge": {
+      "model": "<VLM_MODEL_FOR_SCORING_EG_Qwen/Qwen3-VL-32B-Instruct>",
+      "slurm": {
+        "account": "<YOUR_SLURM_ACCOUNT_FOR_LARGE_JOBS>",
+        "partition": "<YOUR_SLURM_PARTITION_FOR_LARGE_JOBS>",
+        "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+        "gpus": 1,
+        "mem": "200G",
+        "time": "120:00:00",
+        "conda_env": "<CONDA_ENV_WITH_VLLM_OR_INFERENCE_STACK>"
+      }
+    },
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_GPU_PARTITION>",
+      "constraint": "<OPTIONAL_GPU_CONSTRAINT>",
+      "gpus": 1,
+      "mem": "120G",
+      "time": "120:00:00",
+      "conda_env": "<CONDA_ENV_WITH_UNIVLM>"
+    },
+    "shared_model_config": {
+      "model_paths": {
+        "blip3o": "<ABS_PATH_OR_HF_ID_FOR_BLIP3O_MODEL>",
+        "showo": "<HF_ID_OR_LOCAL_PATH_FOR_SHOWO>",
+        "showo2": "<HF_ID_OR_LOCAL_PATH_FOR_SHOWO2>"
+      },
+      "config_paths": {
+        "showo": "<ABS_PATH_TO_SHOWO_CONFIG_YAML>",
+        "showo2": "<ABS_PATH_TO_SHOWO2_CONFIG_YAML>"
+      }
+    }
+  },
+
+  "graph_matching": {
+    "slurm": {
+      "account": "<YOUR_SLURM_ACCOUNT>",
+      "partition": "<YOUR_CPU_PARTITION>",
+      "mem": "32G",
+      "time": "2:00:00",
+      "conda_env": "<CONDA_ENV_FOR_GRAPH_MATCHING>"
+    }
+  },
+
+  "models": [
+    "showo2",
+    "mmada",
+    "showo",
+    "januspro",
+    "blip3o",
+    "omnigen2",
+    "bagel",
+    "tar"
+  ]
+}

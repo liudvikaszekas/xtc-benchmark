@@ -1,0 +1,303 @@
+[
+  {
+    "name": "simple_attribute_query",
+    "description": "Query a single attribute of an object",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "query_attr", "inputs": [2], "side_inputs": ["<attr_key>"]}
+    ],
+    "question_templates": [
+      "What is the <attr_key> of the <label>?",
+      "Describe the <attr_key> of the <label>.",
+      "What <attr_key> does the <label> have?",
+      "Which <attr_key> characterizes the <label>?",
+      "What would you say about the <attr_key> of the <label>?"
+    ],
+    "answer_type": "attr_value"
+  },
+  {
+    "name": "attribute_of_filtered_object",
+    "description": "Filter by attribute, then query another attribute",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<filter_key>", "<filter_value>"]},
+      {"type": "unique", "inputs": [2]},
+      {"type": "query_attr", "inputs": [3], "side_inputs": ["<query_key>"]}
+    ],
+    "question_templates": [
+      "What is the <query_key> of the <label> that is <filter_key> <filter_value>?",
+      "For the <label> with <filter_key> <filter_value>, what is the <query_key>?",
+      "The <label> that is <filter_key> <filter_value> has what <query_key>?",
+      "Among the <label>s, which one is <filter_key> <filter_value>? What is its <query_key>?",
+      "Identify the <label> with <filter_key> <filter_value> and describe its <query_key>."
+    ],
+    "answer_type": "attr_value"
+  },
+  {
+    "name": "existence_check",
+    "description": "Does an object with specific attributes exist?",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<attr_key>", "<attr_value>"]},
+      {"type": "count", "inputs": [2]}
+    ],
+    "question_templates": [
+      "Is there a <label> that is <attr_key> <attr_value>?",
+      "Does any <label> have <attr_key> <attr_value>?",
+      "Can you find a <label> with <attr_key> <attr_value>?",
+      "Are there any <label>s that are <attr_key> <attr_value>?",
+      "Would you say there is a <label> with <attr_key> <attr_value>?"
+    ],
+    "answer_type": "yes_no"
+  },
+  {
+    "name": "count_filtered",
+    "description": "Count objects matching criteria",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<attr_key>", "<attr_value>"]},
+      {"type": "count", "inputs": [2]}
+    ],
+    "question_templates": [
+      "How many <label>s have <attr_key> <attr_value>?",
+      "Count the <label>s with <attr_key> <attr_value>.",
+      "What is the number of <label>s that are <attr_key> <attr_value>?",
+      "How many <label>s are <attr_key> <attr_value>?",
+      "In total, how many <label>s have <attr_key> <attr_value>?"
+    ],
+    "answer_type": "number"
+  },
+  {
+    "name": "count_all_label",
+    "description": "Count all objects of a label",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "count", "inputs": [1]}
+    ],
+    "question_templates": [
+      "How many <label>s are there?",
+      "Count the <label>s in the image.",
+      "What is the total number of <label>s?",
+      "How many <label>s can you see?",
+      "In total, how many <label>s are visible?"
+    ],
+    "answer_type": "number"
+  },
+  {
+    "name": "comparative_count",
+    "description": "Compare counts of two object types",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label1>"]},
+      {"type": "count", "inputs": [1]},
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [3], "side_inputs": ["<label2>"]},
+      {"type": "count", "inputs": [4]},
+      {"type": "compare_count", "inputs": [2, 5], "side_inputs": ["<comparison>"]}
+    ],
+    "question_templates": [
+      "Are there more <label1>s or <label2>s?",
+      "Which is more common: <label1> or <label2>?",
+      "Do <label1>s outnumber <label2>s?",
+      "Is there a greater number of <label1>s or <label2>s?",
+      "Would you say there are more <label1>s than <label2>s?"
+    ],
+    "answer_type": "comparison"
+  },
+  {
+    "name": "attribute_comparison",
+    "description": "Compare attribute values of two objects",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label1>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "query_attr", "inputs": [2], "side_inputs": ["<attr_key>"]},
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [4], "side_inputs": ["<label2>"]},
+      {"type": "unique", "inputs": [5]},
+      {"type": "query_attr", "inputs": [6], "side_inputs": ["<attr_key>"]},
+      {"type": "compare_attr", "inputs": [3, 7], "side_inputs": ["<comparison>"]}
+    ],
+    "question_templates": [
+      "Does the <label1> have the same <attr_key> as the <label2>?",
+      "What is the difference in <attr_key> between the <label1> and <label2>?",
+      "Are the <label1> and <label2> the same <attr_key>?",
+      "Compare the <attr_key> of the <label1> and <label2>.",
+      "Is the <label1> <attr_key> the same as the <label2>?"
+    ],
+    "answer_type": "comparison"
+  },
+  {
+    "name": "spatial_relationship",
+    "description": "Query spatial relationships",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<subj_label>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "relate", "inputs": [2], "side_inputs": ["<relation>"]},
+      {"type": "filter_label", "inputs": [3], "side_inputs": ["<obj_label>"]}
+    ],
+    "question_templates": [
+      "What <obj_label> is the <subj_label> <relation>?",
+      "Is the <subj_label> <relation> a <obj_label>?",
+      "What <obj_label> involves the <subj_label> being <relation> it?",
+      "Identify the <obj_label> that the <subj_label> is <relation>.",
+      "Is the <subj_label> <relation> any <obj_label>?"
+    ],
+    "answer_type": "label"
+  },
+  {
+    "name": "relationship_count",
+    "description": "Count objects in a relationship",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<subj_label>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "relate", "inputs": [2], "side_inputs": ["<relation>"]},
+      {"type": "filter_label", "inputs": [3], "side_inputs": ["<obj_label>"]},
+      {"type": "count", "inputs": [4]}
+    ],
+    "question_templates": [
+      "How many <obj_label>s is the <subj_label> <relation>?",
+      "Count the <obj_label>s that the <subj_label> is <relation>.",
+      "What is the number of <obj_label>s that the <subj_label> is <relation>?",
+      "How many <obj_label>s involve the <subj_label> being <relation>?",
+      "In total, how many <obj_label>s is the <subj_label> <relation>?"
+    ],
+    "answer_type": "number"
+  },
+  {
+    "name": "attribute_of_related",
+    "description": "Query attribute of related object",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<subj_label>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "relate", "inputs": [2], "side_inputs": ["<relation>"]},
+      {"type": "filter_label", "inputs": [3], "side_inputs": ["<obj_label>"]},
+      {"type": "unique", "inputs": [4]},
+      {"type": "query_attr", "inputs": [5], "side_inputs": ["<attr_key>"]}
+    ],
+    "question_templates": [
+      "What is the <attr_key> of the <obj_label> that the <subj_label> is <relation>?",
+      "Describe the <attr_key> of the <obj_label> that the <subj_label> is <relation>.",
+      "What <attr_key> characterizes the <obj_label> that the <subj_label> is <relation>?",
+      "For the <obj_label> that the <subj_label> is <relation>, what is its <attr_key>?",
+      "Tell me about the <attr_key> of the <obj_label> associated with the <subj_label> being <relation>."
+    ],
+    "answer_type": "attr_value"
+  },
+  {
+    "name": "multi_filter_query",
+    "description": "Filter by multiple attributes then query",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<key1>", "<value1>"]},
+      {"type": "filter_attr", "inputs": [2], "side_inputs": ["<key2>", "<value2>"]},
+      {"type": "unique", "inputs": [3]},
+      {"type": "query_attr", "inputs": [4], "side_inputs": ["<query_key>"]}
+    ],
+    "question_templates": [
+      "What is the <query_key> of the <label> that is both <key1> <value1> and <key2> <value2>?",
+      "For the <label> with <key1> <value1> and <key2> <value2>, describe its <query_key>.",
+      "Find the <label> that is <key1> <value1> and <key2> <value2>. What is its <query_key>?",
+      "The <label> that has <key1> <value1> and is <key2> <value2>: what is its <query_key>?",
+      "Identify the <label> matching <key1> <value1> and <key2> <value2>, then state its <query_key>."
+    ],
+    "answer_type": "attr_value"
+  },
+  {
+    "name": "attribute_presence",
+    "description": "Does object have specific attribute value?",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<attr_key>", "<attr_value>"]},
+      {"type": "count", "inputs": [2]}
+    ],
+    "question_templates": [
+      "Does the <label> have <attr_key> <attr_value>?",
+      "Is the <label> <attr_key> <attr_value>?",
+      "Can the <label> be described as <attr_key> <attr_value>?",
+      "Would you characterize the <label> as <attr_key> <attr_value>?",
+      "Does the <label> feature <attr_key> <attr_value>?"
+    ],
+    "answer_type": "yes_no"
+  },
+  {
+    "name": "label_of_filtered",
+    "description": "What is the label of object matching attributes?",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_attr", "inputs": [0], "side_inputs": ["<attr_key>", "<attr_value>"]},
+      {"type": "unique", "inputs": [1]},
+      {"type": "query_label", "inputs": [2]}
+    ],
+    "question_templates": [
+      "What object is <attr_key> <attr_value>?",
+      "Which object has <attr_key> <attr_value>?",
+      "What is the <attr_key> <attr_value> object?",
+      "Identify the object that is <attr_key> <attr_value>.",
+      "Which object would you describe as <attr_key> <attr_value>?"
+    ],
+    "answer_type": "label"
+  },
+  {
+    "name": "attribute_of_unique_instance",
+    "description": "Query attribute of a unique instance (using descriptive attributes)",
+    "multi_instance_only": true,
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<label>"]},
+      {"type": "sample", "inputs": [1]},
+      {"type": "query_attr", "inputs": [2], "side_inputs": ["<attr_key>"]}
+    ],
+    "question_templates": [
+      "What is the <attr_key> of the <OBJ_DESC>?",
+      "Describe the <attr_key> of the <OBJ_DESC>.",
+      "What <attr_key> does the <OBJ_DESC> have?"
+    ],
+    "answer_type": "attr_value"
+  },
+  {
+    "name": "relationship_query_unique",
+    "description": "Query relationship of a unique instance (Type 3)",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_label", "inputs": [0], "side_inputs": ["<subj_label>"]},
+      {"type": "sample", "inputs": [1]},
+      {"type": "relate", "inputs": [2], "side_inputs": ["<rel>"]},
+      {"type": "unique", "inputs": [3]},
+      {"type": "query_label", "inputs": [4]}
+    ],
+    "question_templates": [
+      "What is the <ANCHOR_DESC> <rel>?",
+      "What object is the <ANCHOR_DESC> <rel>?",
+      "Identify what the <ANCHOR_DESC> is <rel>."
+    ],
+    "answer_type": "label"
+  },
+  {
+    "name": "label_of_multi_filtered",
+    "description": "Query label of object identified by multiple attributes (Type 2)",
+    "program": [
+      {"type": "scene", "inputs": []},
+      {"type": "filter_attr", "inputs": [0], "side_inputs": ["<key1>", "<val1>"]},
+      {"type": "filter_attr", "inputs": [1], "side_inputs": ["<key2>", "<val2>"]},
+      {"type": "unique", "inputs": [2]},
+      {"type": "query_label", "inputs": [3]}
+    ],
+    "question_templates": [
+      "What object is both <key1> <val1> and <key2> <val2>?",
+      "Which object has <key1> <val1> and <key2> <val2>?"
+    ],
+    "answer_type": "label"
+  }
+]

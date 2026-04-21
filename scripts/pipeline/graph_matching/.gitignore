@@ -1,0 +1,16 @@
+# Repository-local .gitignore for the graph_matching folder
+# Exclude all JSON and PKL files as requested
+*.json
+*.pkl
+*.jpg
+
+# Optional: common Python/IDE ignores
+__pycache__/
+*.py[cod]
+.env
+.venv
+.vscode/
+
+# If you want to keep specific JSON/PKL files tracked, add exceptions below, e.g.:
+# !graphs/graph_a.json
+# !openpsg_graphs/scene_graphs_0_25_matched.json

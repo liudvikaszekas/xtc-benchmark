@@ -1,0 +1,13 @@
+name: graph_matching
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scipy
+  - networkx
+  - matplotlib
+  - pandas
+  - tqdm

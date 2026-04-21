@@ -1,0 +1,19 @@
+[
+  {
+    "multi_instance_only": false,
+    "params": [
+      { "name": "<OBJ_IDX>", "type": "InstanceIndex" },
+      { "name": "<ATT>", "type": "AttributeType" }
+    ],
+    "nodes": [
+      { "type": "scene", "inputs": [] },
+      { "type": "filter_index", "inputs": [0], "side_inputs": ["<OBJ_IDX>"] },
+      { "type": "unique", "inputs": [1] },
+      { "type": "query_attr", "inputs": [2], "side_inputs": ["<ATT>"] }
+    ],
+    "text": [
+      "What <ATT> is the <OBJ_DESC>?",
+      "What is the <ATT> of the <OBJ_DESC>?"
+    ]
+  }
+]

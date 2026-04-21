@@ -1,0 +1,542 @@
+{
+  "supercategories": {
+    "person": {
+      "categories": [
+        "person"
+      ],
+      "attribute_types": [
+        "upper_clothing_type",
+        "upper_clothing_color",
+        "lower_clothing_type",
+        "lower_clothing_color",
+        "held_object_type",
+        "headwear_eyewear"
+      ]
+    },
+    "vehicle": {
+      "categories": [
+        "airplane",
+        "bicycle",
+        "boat",
+        "bus",
+        "car",
+        "motorcycle",
+        "train",
+        "truck"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "viewpoint_angle",
+        "text_number_visible"
+      ]
+    },
+    "traffic_control": {
+      "categories": [
+        "traffic light",
+        "stop sign",
+        "parking meter"
+      ],
+      "attribute_types": [
+        "light_color_state",
+        "text_on_sign",
+        "mounted_position"
+      ]
+    },
+    "street_furniture": {
+      "categories": [
+        "bench",
+        "fire hydrant"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "animal": {
+      "categories": [
+        "bear",
+        "bird",
+        "cat",
+        "cow",
+        "dog",
+        "elephant",
+        "giraffe",
+        "horse",
+        "sheep",
+        "zebra"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "body_position"
+      ]
+    },
+    "bags_accessories": {
+      "categories": [
+        "backpack",
+        "handbag",
+        "suitcase",
+        "umbrella"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "open_closed_state"
+      ]
+    },
+    "wearables": {
+      "categories": [
+        "tie"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "sports_equipment": {
+      "categories": [
+        "baseball bat",
+        "baseball glove",
+        "frisbee",
+        "kite",
+        "skateboard",
+        "skis",
+        "snowboard",
+        "sports ball",
+        "surfboard",
+        "tennis racket"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "brand_text_visible"
+      ]
+    },
+    "containers": {
+      "categories": [
+        "bottle",
+        "bowl",
+        "cup",
+        "wine glass"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "content_visible"
+      ]
+    },
+    "utensils": {
+      "categories": [
+        "fork",
+        "knife",
+        "spoon"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "prepared_food": {
+      "categories": [
+        "cake",
+        "donut",
+        "hot dog",
+        "pizza",
+        "sandwich",
+        "food-other-merged"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "topping_type"
+      ]
+    },
+    "raw_produce": {
+      "categories": [
+        "apple",
+        "banana",
+        "broccoli",
+        "carrot",
+        "fruit",
+        "orange"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "furniture": {
+      "categories": [
+        "bed",
+        "chair",
+        "couch",
+        "dining table"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "potted_vegetation": {
+      "categories": [
+        "potted plant",
+        "flower"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "container_type"
+      ]
+    },
+    "landscape_vegetation": {
+      "categories": [
+        "grass-merged",
+        "tree-merged"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "screen_devices": {
+      "categories": [
+        "cell phone",
+        "laptop",
+        "tv"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "brand_text_visible",
+        "screen_on_off"
+      ]
+    },
+    "input_devices": {
+      "categories": [
+        "keyboard",
+        "mouse",
+        "remote"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "brand_text_visible"
+      ]
+    },
+    "door_appliances": {
+      "categories": [
+        "microwave",
+        "oven",
+        "refrigerator",
+        "toaster"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "door_open_closed"
+      ]
+    },
+    "bathroom_fixtures": {
+      "categories": [
+        "sink",
+        "toilet"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "indoor_objects": {
+      "categories": [
+        "book",
+        "clock",
+        "hair drier",
+        "scissors",
+        "teddy bear",
+        "toothbrush",
+        "vase"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "text_visible"
+      ]
+    },
+    "textiles": {
+      "categories": [
+        "banner",
+        "blanket",
+        "curtain",
+        "pillow",
+        "towel",
+        "rug-merged"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "text_visible"
+      ]
+    },
+    "surfaces": {
+      "categories": [
+        "road",
+        "pavement-merged",
+        "sand",
+        "gravel",
+        "snow",
+        "dirt-merged"
+      ],
+      "attribute_types": [
+        "surface_material",
+        "marking_type",
+        "wet_dry_state"
+      ]
+    },
+    "buildings": {
+      "categories": [
+        "building-other-merged",
+        "house",
+        "tent"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "window_count"
+      ]
+    },
+    "infrastructure": {
+      "categories": [
+        "bridge",
+        "fence-merged",
+        "stairs",
+        "roof",
+        "platform",
+        "railroad"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "openable_elements": {
+      "categories": [
+        "door-stuff",
+        "window-blind",
+        "window-other"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "open_closed_state"
+      ]
+    },
+    "room_surfaces": {
+      "categories": [
+        "ceiling-merged",
+        "floor-other-merged",
+        "floor-wood",
+        "wall-brick",
+        "wall-other-merged",
+        "wall-stone",
+        "wall-tile",
+        "wall-wood"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "storage_furniture": {
+      "categories": [
+        "cabinet-merged",
+        "shelf"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "drawer_count"
+      ]
+    },
+    "work_surfaces": {
+      "categories": [
+        "table-merged",
+        "counter"
+      ],
+      "attribute_types": [
+        "primary_color"
+      ]
+    },
+    "outdoor_elements": {
+      "categories": [
+        "cardboard",
+        "light",
+        "mirror-stuff",
+        "net",
+        "paper-merged",
+        "playingfield",
+        "rock-merged"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "text_visible"
+      ]
+    },
+    "natural_environment": {
+      "categories": [
+        "mountain-merged",
+        "river",
+        "sea",
+        "sky-other-merged",
+        "water-other"
+      ],
+      "attribute_types": [
+        "primary_color",
+        "weather_type",
+        "wave_cloud_visible"
+      ]
+    }
+  },
+  "category_to_supercategory": {
+    "person": "person",
+    "airplane": "vehicle",
+    "bicycle": "vehicle",
+    "boat": "vehicle",
+    "bus": "vehicle",
+    "car": "vehicle",
+    "motorcycle": "vehicle",
+    "train": "vehicle",
+    "truck": "vehicle",
+    "traffic light": "traffic_control",
+    "stop sign": "traffic_control",
+    "parking meter": "traffic_control",
+    "bench": "street_furniture",
+    "fire hydrant": "street_furniture",
+    "bear": "animal",
+    "bird": "animal",
+    "cat": "animal",
+    "cow": "animal",
+    "dog": "animal",
+    "elephant": "animal",
+    "giraffe": "animal",
+    "horse": "animal",
+    "sheep": "animal",
+    "zebra": "animal",
+    "backpack": "bags_accessories",
+    "handbag": "bags_accessories",
+    "suitcase": "bags_accessories",
+    "umbrella": "bags_accessories",
+    "tie": "wearables",
+    "baseball bat": "sports_equipment",
+    "baseball glove": "sports_equipment",
+    "frisbee": "sports_equipment",
+    "kite": "sports_equipment",
+    "skateboard": "sports_equipment",
+    "skis": "sports_equipment",
+    "snowboard": "sports_equipment",
+    "sports ball": "sports_equipment",
+    "surfboard": "sports_equipment",
+    "tennis racket": "sports_equipment",
+    "bottle": "containers",
+    "bowl": "containers",
+    "cup": "containers",
+    "fork": "utensils",
+    "knife": "utensils",
+    "spoon": "utensils",
+    "wine glass": "containers",
+    "apple": "raw_produce",
+    "banana": "raw_produce",
+    "broccoli": "raw_produce",
+    "cake": "prepared_food",
+    "carrot": "raw_produce",
+    "donut": "prepared_food",
+    "food-other-merged": "prepared_food",
+    "fruit": "raw_produce",
+    "hot dog": "prepared_food",
+    "orange": "raw_produce",
+    "pizza": "prepared_food",
+    "sandwich": "prepared_food",
+    "bed": "furniture",
+    "chair": "furniture",
+    "couch": "furniture",
+    "dining table": "furniture",
+    "potted plant": "potted_vegetation",
+    "flower": "potted_vegetation",
+    "grass-merged": "landscape_vegetation",
+    "tree-merged": "landscape_vegetation",
+    "cell phone": "screen_devices",
+    "keyboard": "input_devices",
+    "laptop": "screen_devices",
+    "mouse": "input_devices",
+    "remote": "input_devices",
+    "tv": "screen_devices",
+    "microwave": "door_appliances",
+    "oven": "door_appliances",
+    "refrigerator": "door_appliances",
+    "sink": "bathroom_fixtures",
+    "toaster": "door_appliances",
+    "toilet": "bathroom_fixtures",
+    "book": "indoor_objects",
+    "clock": "indoor_objects",
+    "hair drier": "indoor_objects",
+    "scissors": "indoor_objects",
+    "teddy bear": "indoor_objects",
+    "toothbrush": "indoor_objects",
+    "vase": "indoor_objects",
+    "banner": "textiles",
+    "blanket": "textiles",
+    "curtain": "textiles",
+    "pillow": "textiles",
+    "towel": "textiles",
+    "rug-merged": "textiles",
+    "road": "surfaces",
+    "pavement-merged": "surfaces",
+    "sand": "surfaces",
+    "gravel": "surfaces",
+    "snow": "surfaces",
+    "dirt-merged": "surfaces",
+    "bridge": "infrastructure",
+    "building-other-merged": "buildings",
+    "house": "buildings",
+    "fence-merged": "infrastructure",
+    "stairs": "infrastructure",
+    "tent": "buildings",
+    "roof": "infrastructure",
+    "platform": "infrastructure",
+    "railroad": "infrastructure",
+    "ceiling-merged": "room_surfaces",
+    "door-stuff": "openable_elements",
+    "floor-other-merged": "room_surfaces",
+    "floor-wood": "room_surfaces",
+    "wall-brick": "room_surfaces",
+    "wall-other-merged": "room_surfaces",
+    "wall-stone": "room_surfaces",
+    "wall-tile": "room_surfaces",
+    "wall-wood": "room_surfaces",
+    "window-blind": "openable_elements",
+    "window-other": "openable_elements",
+    "cabinet-merged": "storage_furniture",
+    "table-merged": "work_surfaces",
+    "counter": "work_surfaces",
+    "shelf": "storage_furniture",
+    "cardboard": "outdoor_elements",
+    "light": "outdoor_elements",
+    "mirror-stuff": "outdoor_elements",
+    "net": "outdoor_elements",
+    "paper-merged": "outdoor_elements",
+    "playingfield": "outdoor_elements",
+    "rock-merged": "outdoor_elements",
+    "mountain-merged": "natural_environment",
+    "river": "natural_environment",
+    "sea": "natural_environment",
+    "sky-other-merged": "natural_environment",
+    "water-other": "natural_environment"
+  },
+  "attribute_type_to_is_has": {
+    "upper_clothing_type": "has",
+    "upper_clothing_color": "has",
+    "lower_clothing_type": "has",
+    "lower_clothing_color": "has",
+    "held_object_type": "has",
+    "headwear_eyewear": "has",
+    "primary_color": "has",
+    "viewpoint_angle": "is",
+    "text_number_visible": "has",
+    "light_color_state": "is",
+    "text_on_sign": "has",
+    "mounted_position": "is",
+    "pattern_type": "has",
+    "body_position": "is",
+    "open_closed_state": "is",
+    "brand_text_visible": "has",
+    "content_visible": "has",
+    "topping_type": "has",
+    "container_type": "has",
+    "screen_on_off": "is",
+    "door_open_closed": "is",
+    "text_visible": "has",
+    "surface_material": "is",
+    "marking_type": "has",
+    "wet_dry_state": "is",
+    "window_count": "has",
+    "drawer_count": "has",
+    "weather_type": "is",
+    "wave_cloud_visible": "has"
+  }
+}

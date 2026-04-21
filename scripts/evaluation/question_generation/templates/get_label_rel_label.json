@@ -1,0 +1,18 @@
+{
+  "params": [
+    { "name": "<SUBJ_LABEL>", "type": "Label" },
+    { "name": "<REL>",        "type": "Relation" }
+  ],
+  "text": [
+    "What is the <SUBJ_LABEL> <REL>?"
+  ],
+  "nodes": [
+    { "type": "scene", "inputs": [] },
+    { "type": "filter_label", "inputs": [0], "side_inputs": ["<SUBJ_LABEL>"] },
+    { "type": "unique", "inputs": [1] },
+    { "type": "relate", "inputs": [2], "side_inputs": ["<REL>"] },
+    { "type": "unique", "inputs": [3] },
+    { "type": "query_label", "inputs": [4] }
+  ],
+  "constraints": []
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "multi_instance_only": true,
+    "params": [
+      { "name": "<OBJ_LABEL>", "type": "Label" },
+      { "name": "<ATT>",       "type": "AttributeType" },
+      { "name": "<ATT_TEXT>",  "type": "AttributeType" }
+    ],
+    "nodes": [
+      { "type": "scene",        "inputs": [] },
+      { "type": "filter_label", "inputs": [0], "side_inputs": ["<OBJ_LABEL>"] },
+      { "type": "sample",       "inputs": [1] },
+      { "type": "query_attr",   "inputs": [2], "side_inputs": ["<ATT>"] }
+    ],
+    "text": [
+      "What <ATT_TEXT> does the <OBJ_DESC> have?"
+    ]
+  }
+]

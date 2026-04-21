@@ -1,0 +1,71 @@
+[
+  {
+    "multi_instance_only": false,
+    "params": [
+      {
+        "name": "<SUBJ_IDX>",
+        "type": "InstanceIndex"
+      },
+      {
+        "name": "<OBJ_IDX>",
+        "type": "InstanceIndex"
+      }
+    ],
+    "nodes": [
+      {
+        "type": "scene",
+        "inputs": []
+      },
+      {
+        "type": "filter_index",
+        "inputs": [
+          0
+        ],
+        "side_inputs": [
+          "<SUBJ_IDX>"
+        ]
+      },
+      {
+        "type": "unique",
+        "inputs": [
+          1
+        ]
+      },
+      {
+        "type": "filter_index",
+        "inputs": [
+          0
+        ],
+        "side_inputs": [
+          "<OBJ_IDX>"
+        ]
+      },
+      {
+        "type": "unique",
+        "inputs": [
+          3
+        ]
+      },
+      {
+        "type": "query_relation",
+        "inputs": [
+          2,
+          4
+        ]
+      }
+    ],
+    "text": [
+      "What is the spatial relation between the <SUBJ_DESC> and the <OBJ_DESC>?",
+      "How are the <SUBJ_DESC> and the <OBJ_DESC> spatially related?"
+    ],
+    "constraints": [
+      {
+        "type": "OUT_NEQ",
+        "params": [
+          2,
+          4
+        ]
+      }
+    ]
+  }
+]

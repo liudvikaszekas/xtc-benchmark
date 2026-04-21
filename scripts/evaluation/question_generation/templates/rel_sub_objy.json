@@ -1,0 +1,19 @@
+{
+  "answer_type": "Bool",
+  "params": [
+    { "name": "<SUBJ_LABEL>", "type": "Label" },
+    { "name": "<OBJ_LABEL>",  "type": "Label" },
+    { "name": "<REL>",        "type": "Relation" }
+  ],
+  "nodes": [
+    { "type": "scene", "inputs": [] },                                         
+    { "type": "filter_label", "inputs": [0], "side_inputs": ["<SUBJ_LABEL>"] }, 
+    { "type": "unique",       "inputs": [1] },                                  
+    { "type": "relate",       "inputs": [2], "side_inputs": ["<REL>"] },        
+    { "type": "filter_label", "inputs": [3], "side_inputs": ["<OBJ_LABEL>"] }   
+  ],
+  "text": [
+    "Is the <SUBJ_LABEL> <REL> the <OBJ_LABEL>?"
+  ],
+  "answer": true
+}
