@@ -3,12 +3,12 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 TMP_WORK_DIR="${REPO_ROOT}/.tmp"
 TMP_DISTRO_DIR="${TMP_WORK_DIR}/distros"
-ENV_YAML_DIR="${REPO_ROOT}/benchmark/setup/environments"
-MODEL_DOWNLOAD_SCRIPT="${REPO_ROOT}/benchmark/setup/download_models.sh"
+ENV_YAML_DIR="${REPO_ROOT}/setup/environments"
+MODEL_DOWNLOAD_SCRIPT="${REPO_ROOT}/setup/download_models.sh"
 MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 
 RUN_SMOKE=1
@@ -34,7 +34,7 @@ CONDA_EXE=""
 
 usage() {
     cat <<'EOF'
-Usage: benchmark/setup/setup.sh [options]
+Usage: setup/setup.sh [options]
 
 Creates benchmark conda environments from portable YAML files (no lockfiles)
 in either:
@@ -461,7 +461,7 @@ git -C "${REPO_ROOT}" submodule update --init --recursive
 
 
 if env_selected "fair-psg"; then
-    FAIR_SUBMODULE="${REPO_ROOT}/benchmark/submodules/panoptic-scene-graph-generation"
+    FAIR_SUBMODULE="${REPO_ROOT}/submodules/panoptic-scene-graph-generation"
     if [[ -d "${FAIR_SUBMODULE}" ]]; then
         install_torch_stack "fair-psg" "${TORCH_VARIANT}"
         record_report "fair-psg: torch_install=ok variant=${TORCH_VARIANT}"
@@ -523,8 +523,8 @@ if env_selected "GenerateAnyScene"; then
     record_report "GenerateAnyScene: torch_install=ok variant=${TORCH_VARIANT}"
 
     GAS_PREFIX="$(env_prefix GenerateAnyScene)"
-    GAS_ENV_FILE="${REPO_ROOT}/benchmark/scripts/pipeline/generate_any_scene/environment.yml"
-    GAS_ENV_FILE_BLACKWELL="${REPO_ROOT}/benchmark/scripts/pipeline/generate_any_scene/environment_blackwell.yml"
+    GAS_ENV_FILE="${REPO_ROOT}/scripts/pipeline/generate_any_scene/environment.yml"
+    GAS_ENV_FILE_BLACKWELL="${REPO_ROOT}/scripts/pipeline/generate_any_scene/environment_blackwell.yml"
     if [[ "${USE_BLACKWELL}" -eq 1 ]]; then
         GAS_ENV_FILE="${GAS_ENV_FILE_BLACKWELL}"
     fi

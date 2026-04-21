@@ -3,10 +3,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 DATASET_REPO="XTC-Bench/xtc-dataset"
-DEST_DIR="${REPO_ROOT}/benchmark/datasets/xtc-dataset"
+DEST_DIR="${REPO_ROOT}/datasets/xtc-dataset"
 SUBSET="all"
 FORCE=0
 
@@ -23,7 +23,7 @@ By default downloads both folders:
 
 Options:
   --dest DIR         Local destination directory
-                     (default: benchmark/datasets/xtc-dataset)
+                     (default: datasets/xtc-dataset)
   --subset NAME      Which GT bundle to download: all | coco | vg
                      (default: all)
   --force            Re-download selected bundle(s)

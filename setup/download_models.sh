@@ -3,9 +3,9 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-KMAX_WEIGHTS_PATH="${REPO_ROOT}/benchmark/weights/kmax_convnext_large.pth"
+KMAX_WEIGHTS_PATH="${REPO_ROOT}/weights/kmax_convnext_large.pth"
 KMAX_GDRIVE_URL_PRIMARY="https://drive.usercontent.google.com/download?id=1b6rEnKw4PNTdqSdWpmb0P9dsvN0pkOiN&export=download"
 KMAX_GDRIVE_URL_FALLBACK="https://drive.google.com/uc?export=download&id=1b6rEnKw4PNTdqSdWpmb0P9dsvN0pkOiN"
 
@@ -15,7 +15,7 @@ FAIR_PSG_CONFIG_PATH="${FAIR_PSG_MODEL_DIR}/config.json"
 FAIR_PSG_HF_BEST_STATE_URL="https://huggingface.co/XTC-Bench/fair-psg-custom/resolve/main/best_state.pth?download=true"
 FAIR_PSG_HF_CONFIG_URL="https://huggingface.co/XTC-Bench/fair-psg-custom/resolve/main/config.json?download=true"
 
-BENCHMARK_WEIGHTS_MODELS_DIR="${REPO_ROOT}/benchmark/weights/models"
+BENCHMARK_WEIGHTS_MODELS_DIR="${REPO_ROOT}/weights/models"
 BENCHMARK_MASKS_LOC_SEM_DIR="${BENCHMARK_WEIGHTS_MODELS_DIR}/masks-loc-sem"
 
 KMAX_MIN_BYTES=100000000
@@ -24,15 +24,15 @@ FORCE=0
 
 usage() {
     cat <<'EOF'
-Usage: benchmark/setup/download_models.sh [options]
+Usage: setup/download_models.sh [options]
 
 Downloads required benchmark model artifacts:
-- benchmark/weights/kmax_convnext_large.pth
+- weights/kmax_convnext_large.pth
 - full_workflow/models/masks-loc-sem/best_state.pth
 - full_workflow/models/masks-loc-sem/config.json
 
 Also creates compatibility symlink:
-- benchmark/weights/models/masks-loc-sem -> ../../../full_workflow/models/masks-loc-sem
+- weights/models/masks-loc-sem -> ../../../full_workflow/models/masks-loc-sem
 
 Options:
   --force      Re-download files even if they already exist and look valid.
@@ -184,7 +184,7 @@ ensure_min_size() {
     return 0
 }
 
-mkdir -p "${REPO_ROOT}/benchmark/weights"
+mkdir -p "${REPO_ROOT}/weights"
 mkdir -p "${FAIR_PSG_MODEL_DIR}"
 
 if [[ "${FORCE}" -eq 0 ]] && ensure_min_size "${KMAX_WEIGHTS_PATH}" "${KMAX_MIN_BYTES}"; then

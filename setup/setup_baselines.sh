@@ -4,7 +4,7 @@ set -eo pipefail
 
 usage() {
     cat <<'EOF'
-Usage: benchmark/setup/setup_baselines.sh [--recreate]
+Usage: setup/setup_baselines.sh [--recreate]
 
 Sets up the baseline generation stack used by benchmark image generation models
 (BLIP3o, Show-o/Show-o2, MMaDA, JanusPro, TAR, Bagel, OmniGen2).
@@ -12,9 +12,9 @@ Sets up the baseline generation stack used by benchmark image generation models
 Environment overrides:
   BASE_STORAGE           Root for env/cache/models (default: <repo>/.tmp/baselines)
   CONDA_ENV_PATH         Baseline conda env path (default: $BASE_STORAGE/envs/univlm)
-  ENV_YAML               Conda YAML to create env (default: benchmark/setup/environments/univlm_env.yml)
-    UNIVLM_PATH            UniVLM checkout path (default: benchmark/submodules/univlm)
-  PIPELINE_DIR           Pipeline scripts path (default: benchmark/scripts/pipeline)
+  ENV_YAML               Conda YAML to create env (default: setup/environments/univlm_env.yml)
+    UNIVLM_PATH            UniVLM checkout path (default: submodules/univlm)
+  PIPELINE_DIR           Pipeline scripts path (default: scripts/pipeline)
   MODELS_DIR             Models storage dir (default: $BASE_STORAGE/models)
   HF_HOME                HF cache (default: $BASE_STORAGE/hf_cache)
   TRITON_CACHE_DIR       Triton cache (default: $BASE_STORAGE/triton_cache)
@@ -40,14 +40,14 @@ if [[ "${1:-}" == "--recreate" ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-DEFAULT_UNIVLM_PATH="${REPO_ROOT}/benchmark/submodules/univlm"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+DEFAULT_UNIVLM_PATH="${REPO_ROOT}/submodules/univlm"
 
 BASE_STORAGE="${BASE_STORAGE:-${REPO_ROOT}/.tmp/baselines}"
 CONDA_ENV_PATH="${CONDA_ENV_PATH:-${BASE_STORAGE}/envs/univlm}"
-ENV_YAML="${ENV_YAML:-${REPO_ROOT}/benchmark/setup/environments/univlm_env.yml}"
+ENV_YAML="${ENV_YAML:-${REPO_ROOT}/setup/environments/univlm_env.yml}"
 UNIVLM_PATH="${UNIVLM_PATH:-${DEFAULT_UNIVLM_PATH}}"
-PIPELINE_DIR="${PIPELINE_DIR:-${REPO_ROOT}/benchmark/scripts/pipeline}"
+PIPELINE_DIR="${PIPELINE_DIR:-${REPO_ROOT}/scripts/pipeline}"
 MODELS_DIR="${MODELS_DIR:-${BASE_STORAGE}/models}"
 SHOWO2_VAE_PATH="${MODELS_DIR}/Wan2.1_VAE.pth"
 SHOWO2_CONFIG_OUTPUT="${SHOWO2_CONFIG_OUTPUT:-${BASE_STORAGE}/configs/showo2_config.yaml}"
@@ -67,7 +67,7 @@ if [[ ! -f "${UNIVLM_PATH}/evaluation/roundtrip_factory.py" ]]; then
     echo "Missing UniVLM checkout or invalid path: ${UNIVLM_PATH}" >&2
     echo "Expected file: ${UNIVLM_PATH}/evaluation/roundtrip_factory.py" >&2
     echo "Set UNIVLM_PATH to a valid checkout, e.g.:" >&2
-    echo "  UNIVLM_PATH=/abs/path/to/univlm ./benchmark/setup/setup_baselines.sh --recreate" >&2
+    echo "  UNIVLM_PATH=/abs/path/to/univlm ./setup/setup_baselines.sh --recreate" >&2
     exit 1
 fi
 
