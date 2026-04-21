@@ -5,28 +5,17 @@ import json
 import argparse
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[3]  # .../vlm-benchmark
+REPO_ROOT = Path(__file__).resolve().parents[2]
 import sys
 sys.path.insert(0, str(REPO_ROOT))
 
-# Add univlm/evaluation to sys.path for roundtrip_factory import
-def _find_univlm_eval():
-    script_dir = Path(__file__).parent
-    possible_paths = [
-        script_dir.parent.parent / "submodules" / "univlm" / "evaluation",               # benchmark/submodules/univlm/evaluation (preferred)
-        script_dir.parent.parent.parent.parent.parent / "univlm" / "evaluation",  # projects/univlm/evaluation
-        script_dir.parent.parent.parent.parent / "univlm" / "evaluation",          # vlm-benchmark/../univlm/evaluation
-        script_dir.parent.parent.parent / "univlm" / "evaluation",                 # vlm-benchmark/univlm/evaluation
-    ]
-    for p in possible_paths:
-        if (p / "roundtrip_factory.py").exists():
-            sys.path.insert(0, str(p.resolve()))
-            return
-    # Fallback: try the most likely default
-    fallback = script_dir.parent.parent / "submodules" / "univlm" / "evaluation"
-    sys.path.insert(0, str(fallback.resolve()))
-
-_find_univlm_eval()
+UNIVLM_EVAL_PATH = REPO_ROOT / "submodules" / "univlm" / "evaluation"
+if not (UNIVLM_EVAL_PATH / "roundtrip_factory.py").exists():
+    raise FileNotFoundError(
+        f"Could not find UniVLM evaluation module at {UNIVLM_EVAL_PATH}. "
+        "Expected submodule at 'submodules/univlm'."
+    )
+sys.path.insert(0, str(UNIVLM_EVAL_PATH.resolve()))
 
 from benchmark.scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_all_models
 from benchmark.scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_model_multi_gpu

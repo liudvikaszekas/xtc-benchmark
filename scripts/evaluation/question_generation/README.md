@@ -21,7 +21,7 @@ The generator procedurally creates 5 types of questions:
 Run the `generate_questions.py` script pointing to your scene graph directory.
 
 ```bash
-generate_questions_from_json.py --attributes_json /sc/home/liudvikas.zekas/vlm-benchmark/pipeline/run_1000_coco_images/5_attributes_gt/attributes.jsonl --metadata_file meta_data/metadata.json --synonyms_json meta_data/synonyms.json --template_dir templates --output_questions_file output/test_generated_questions.json --graph_merge_dir /sc/home/liudvikas.zekas/vlm-benchmark/pipeline/run_1000_coco_images/4_graph_merge_gt
+generate_questions_from_json.py --attributes_json /path/to/xtc-benchmark/pipeline/run_1000_coco_images/5_attributes_gt/attributes.jsonl --metadata_file meta_data/metadata.json --synonyms_json meta_data/synonyms.json --template_dir templates --output_questions_file output/test_generated_questions.json --graph_merge_dir /path/to/xtc-benchmark/pipeline/run_1000_coco_images/4_graph_merge_gt
 ```
 -> template_dir is legacy, we do not use it at the moment anymore.
 

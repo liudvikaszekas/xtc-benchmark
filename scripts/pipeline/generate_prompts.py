@@ -44,7 +44,7 @@ def main():
     
     run_dir = Path(args.run_dir)
     # We still need root_dir for some later script calls (if not yet moved)
-    # We'll set root_dir to vlm-benchmark based on the assumption that
+    # We'll set root_dir based on the assumption that
     # the script is at benchmark/scripts/pipeline/generate_prompts.py
     curr_dir = Path(__file__).resolve().parent
     root_dir = curr_dir.parents[2]

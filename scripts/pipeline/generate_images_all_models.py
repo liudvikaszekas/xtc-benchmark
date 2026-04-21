@@ -34,9 +34,9 @@ def _find_univlm():
     script_dir = Path(__file__).parent
     possible_paths = [
         script_dir.parent.parent / "submodules" / "univlm",   # benchmark/submodules/univlm (preferred)
-        script_dir.parent.parent.parent.parent / "univlm",  # projects/univlm (sibling of vlm-benchmark)
-        script_dir.parent.parent.parent / "univlm",  # home/univlm if in vlm-benchmark/pipeline/scripts
-        script_dir.parent.parent / "univlm",         # home/univlm if in vlm-benchmark/univlm_eval
+        script_dir.parent.parent.parent.parent / "univlm",  # projects/univlm (sibling of benchmark repo)
+        script_dir.parent.parent.parent / "univlm",  # home/univlm if script is moved under pipeline/scripts
+        script_dir.parent.parent / "univlm",         # home/univlm if script is moved under univlm_eval
         script_dir / "univlm",                       # local child
     ]
     for p in possible_paths:

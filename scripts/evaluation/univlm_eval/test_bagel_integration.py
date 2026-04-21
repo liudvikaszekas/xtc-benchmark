@@ -9,7 +9,7 @@ sys.path.append(str(univlm_path))
 sys.path.append(str(univlm_path / "evaluation"))
 
 # Import the module under test
-sys.path.append("/sc/home/constantin.auga/MP/vlm-benchmark/univlm_eval")
+sys.path.append(str(Path(__file__).resolve().parent))
 from generate_images_all_models import generate_images_for_model
 from answer_image_questions_all_models import answer_questions_for_model
 

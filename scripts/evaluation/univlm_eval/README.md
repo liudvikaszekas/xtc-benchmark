@@ -2,10 +2,10 @@
 
 ## Univlm Repo Setup
 
-The scripts expect the `univlm` repository in the parent directory of `vlm-benchmark` (default):
+The scripts expect the `univlm` repository in the parent directory of the benchmark repo (default):
 ```
 /path/to/
-├── vlm-benchmark/univlm_eval/  ← You are here
+├── xtc-benchmark/scripts/evaluation/univlm_eval/  ← You are here
 └── univlm/                      ← Default location
 ```
 
