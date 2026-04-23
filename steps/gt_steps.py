@@ -13,7 +13,7 @@ class SegmentationStep(PipelineStep):
         
     def get_command(self, run_dir: Path) -> List[str]:
         # Refined command structure
-        script_path = "benchmark/scripts/pipeline/generate_segmasks_kmax.py" # Local copy
+        script_path = "scripts/pipeline/generate_segmasks_kmax.py" # Local copy
         
         # Get config values
         kmax_config = self.config.get('kmax_config', {})
@@ -22,7 +22,7 @@ class SegmentationStep(PipelineStep):
         psg_meta_path = self.config.get("psg_meta_path")
         if not psg_meta_path:
              # Fallback
-             psg_meta_path = "benchmark/configs/psg_metadata.json"
+             psg_meta_path = "configs/psg_metadata.json"
 
         m_name = self.model_name or "default"
         if self.is_prediction:
@@ -36,9 +36,9 @@ class SegmentationStep(PipelineStep):
                "--img-dir", str(img_dir),
                "--out-dir", out_dir,
                "--psg-meta", psg_meta_path,
-               "--kmax-path", kmax_config.get("path", "benchmark/submodules/kmax-deeplab"),
-               "--kmax-config", kmax_config.get("config", "benchmark/scripts/pipeline/segmentation/config/kmax_r50.yaml"),
-               "--kmax-weights", kmax_config.get("weights", "benchmark/weights/kmax_r50.pth")
+               "--kmax-path", kmax_config.get("path", "submodules/kmax-deeplab"),
+               "--kmax-config", kmax_config.get("config", "scripts/pipeline/segmentation/config/kmax_r50.yaml"),
+               "--kmax-weights", kmax_config.get("weights", "weights/kmax_r50.pth")
                ]
         return cmd
 
@@ -55,12 +55,12 @@ class SceneGraphGenerationStep(PipelineStep):
         self.model_name = model_name
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/generate_sg.py"
-        model_dir = self.config.get("model_dir", "benchmark/weights/models/masks-loc-sem")
+        script_path = "scripts/pipeline/generate_sg.py"
+        model_dir = self.config.get("model_dir", "weights/models/masks-loc-sem")
         
         psg_meta_path = self.config.get("psg_meta_path")
         if not psg_meta_path:
-             psg_meta_path = "benchmark/configs/psg_metadata.json"
+             psg_meta_path = "configs/psg_metadata.json"
              
         m_name = self.model_name or "default"
         if self.is_prediction:
@@ -98,7 +98,7 @@ class CleanAndRefineRelationsStep(PipelineStep):
         self.use_flexible_spatial_prompt = use_flexible_spatial_prompt
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/clean_and_refine_relations.py"
+        script_path = "scripts/pipeline/clean_and_refine_relations.py"
         
         m_name = self.model_name or "default"
         if self.is_prediction:
@@ -147,7 +147,7 @@ class GraphMergingStep(PipelineStep):
         self.model_name = model_name
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/run_graph_merge.py"
+        script_path = "scripts/pipeline/run_graph_merge.py"
         
         m_name = self.model_name or "default"
         if self.is_prediction:
@@ -189,9 +189,9 @@ class AttributeGenerationStep(PipelineStep):
         self.model_name = model_name
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/generate_attributes.py"
+        script_path = "scripts/pipeline/generate_attributes.py"
         
-        mapping_path = self.config.get('mapping_json', "benchmark/configs/updated_category_mapping.json")
+        mapping_path = self.config.get('mapping_json', "configs/updated_category_mapping.json")
 
         m_name = self.model_name or "default"
         if self.is_prediction:
@@ -256,7 +256,7 @@ class GraphMatchingStep(PipelineStep):
         self.model_name = model_name
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/run_graph_matching.py"
+        script_path = "scripts/pipeline/run_graph_matching.py"
         gt_sg_dir = run_dir / "4_graph_merge_gt"
         gt_attr_file = run_dir / "5_attributes_gt" / "attributes.json"
         
@@ -283,7 +283,7 @@ class PromptGenerationStep(PipelineStep):
         super().__init__("prompt_generation", config)
 
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/generate_prompts.py"
+        script_path = "scripts/pipeline/generate_prompts.py"
         cmd = ["python", script_path, "--run_dir", str(run_dir)]
         
         if self.config.get('refine_sentences'):

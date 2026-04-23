@@ -24,5 +24,27 @@
   "category_mapping_path": "configs/updated_category_mapping.json",
   "vqa_metadata_path": "configs/vqa_metadata.json",
   "vqa_synonyms_path": "configs/vqa_synonyms.json",
-  "vqa_templates_dir": "scripts/evaluation/question_generation/templates"
+  "vqa_templates_dir": "scripts/evaluation/question_generation/templates",
+  "conda_init": "source .tmp/distros/xtc_core/conda_init.sh",
+  "step_conda_envs": {
+    "1": ".tmp/distros/xtc_core/envs/kmax_env",
+    "2": ".tmp/distros/xtc_core/envs/fair-psg",
+    "3": ".tmp/distros/xtc_core/envs/vllm_env",
+    "4": ".tmp/distros/xtc_core/envs/fair-psg",
+    "5": ".tmp/distros/xtc_core/envs/vllm_env",
+    "6": ".tmp/distros/xtc_core/envs/vllm_env",
+    "7": ".tmp/distros/xtc_core/envs/GenerateAnyScene",
+    "8": ".tmp/distros/xtc_core/envs/univlm",
+    "9": ".tmp/distros/xtc_core/envs/kmax_env",
+    "10": ".tmp/distros/xtc_core/envs/fair-psg",
+    "11": ".tmp/distros/xtc_core/envs/vllm_env",
+    "12": ".tmp/distros/xtc_core/envs/fair-psg",
+    "13": ".tmp/distros/xtc_core/envs/vllm_env",
+    "14": ".tmp/distros/xtc_core/envs/graph_matching",
+    "15": ".tmp/distros/xtc_core/envs/vllm_env",
+    "16": ".tmp/distros/xtc_core/envs/vllm_env",
+    "17": ".tmp/distros/xtc_core/envs/univlm",
+    "18": ".tmp/distros/xtc_core/envs/univlm",
+    "19": ".tmp/distros/xtc_core/envs/vllm_env"
+  }
 }

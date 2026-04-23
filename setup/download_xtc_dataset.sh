@@ -93,26 +93,50 @@ fi
 echo "[xtc-dataset] Downloading ${SUBSET} bundle(s) from ${DATASET_REPO}"
 echo "[xtc-dataset] Destination: ${DEST_DIR}"
 
+# Conditionally enable hf_transfer if installed
+USE_HF_TRANSFER=0
+if python -c "import hf_transfer" &>/dev/null; then
+    USE_HF_TRANSFER=1
+fi
+
 XTC_DATASET_REPO="${DATASET_REPO}" \
 XTC_DEST_DIR="${DEST_DIR}" \
 XTC_ALLOW_PATTERNS="${ALLOW_PATTERNS}" \
+HF_HUB_ENABLE_HF_TRANSFER="${USE_HF_TRANSFER}" \
 python - <<'PY'
 import os
+import time
 from huggingface_hub import snapshot_download
+from huggingface_hub.utils import HfHubHTTPError
 
 repo_id = os.environ["XTC_DATASET_REPO"]
 local_dir = os.environ["XTC_DEST_DIR"]
 allow_patterns = [p.strip() for p in os.environ["XTC_ALLOW_PATTERNS"].split(",") if p.strip()]
 
-snapshot_download(
-    repo_id=repo_id,
-    repo_type="dataset",
-    local_dir=local_dir,
-    allow_patterns=allow_patterns,
-)
-
-print("[xtc-dataset] Download completed")
-print(f"[xtc-dataset] Local path: {local_dir}")
+max_retries = 25
+for attempt in range(max_retries):
+    try:
+        snapshot_download(
+            repo_id=repo_id,
+            repo_type="dataset",
+            local_dir=local_dir,
+            allow_patterns=allow_patterns,
+            max_workers=8, # Reduce concurrency slightly to avoid hitting limits too fast
+        )
+        print("[xtc-dataset] Download completed")
+        break
+    except Exception as e:
+        # Check if it's a rate limit error (429)
+        is_rate_limit = False
+        if hasattr(e, "response") and e.response is not None:
+            if e.response.status_code == 429:
+                is_rate_limit = True
+        
+        if is_rate_limit:
+            print(f"\n[xtc-dataset] Rate limit hit (1000 req/5min). Waiting 5 minutes... (Attempt {attempt+1}/{max_retries})")
+            time.sleep(305)
+        else:
+            raise e
 PY
 
 echo

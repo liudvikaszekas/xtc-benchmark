@@ -156,28 +156,29 @@ from typing import Any, Dict, List, Optional, Tuple
 # ---------------------------------------------------------------------------
 
 def _find_repo_root() -> Path:
-    """Walk up from this script to find the repo root (directory containing benchmark/configs/)."""
+    """Walk up from this script to find the repo root (directory containing configs/)."""
     current = Path(__file__).resolve().parent
     for _ in range(10):
-        if (current / "benchmark" / "configs").is_dir():
+        # In xtc-benchmark, configs/ and scripts/ are at the root
+        if (current / "configs").is_dir() and (current / "scripts").is_dir():
             return current
         current = current.parent
-    # Fallback: assume script is at <repo>/benchmark/run_sequential.py
-    return Path(__file__).resolve().parent.parent
+    # Fallback: assume script is at the repo root
+    return Path(__file__).resolve().parent
 
 REPO_ROOT = _find_repo_root()
 
-# Default weight/config locations (set up by the setup script, task 5)
-DEFAULT_WEIGHTS_DIR = REPO_ROOT / "benchmark" / "weights"
-DEFAULT_KMAX_SUBMODULE = REPO_ROOT / "benchmark" / "submodules" / "kmax-deeplab"
-DEFAULT_KMAX_CONFIG = REPO_ROOT / "benchmark" / "scripts" / "pipeline" / "segmentation" / "config" / "kmax_convnext_large.yaml"
+# Default weight/config locations
+DEFAULT_WEIGHTS_DIR = REPO_ROOT / "weights"
+DEFAULT_KMAX_SUBMODULE = REPO_ROOT / "submodules" / "kmax-deeplab"
+DEFAULT_KMAX_CONFIG = REPO_ROOT / "scripts" / "pipeline" / "segmentation" / "config" / "kmax_convnext_large.yaml"
 DEFAULT_KMAX_WEIGHTS = DEFAULT_WEIGHTS_DIR / "kmax_convnext_large.pth"
 DEFAULT_PSG_MODEL_DIR = DEFAULT_WEIGHTS_DIR / "models" / "masks-loc-sem"
-DEFAULT_PSG_META = REPO_ROOT / "benchmark" / "configs" / "psg_metadata.json"
-DEFAULT_CATEGORY_MAPPING = REPO_ROOT / "benchmark" / "configs" / "updated_category_mapping.json"
-DEFAULT_VQA_METADATA = REPO_ROOT / "benchmark" / "configs" / "vqa_metadata.json"
-DEFAULT_VQA_SYNONYMS = REPO_ROOT / "benchmark" / "configs" / "vqa_synonyms.json"
-DEFAULT_VQA_TEMPLATES = REPO_ROOT / "benchmark" / "scripts" / "evaluation" / "question_generation" / "templates"
+DEFAULT_PSG_META = REPO_ROOT / "configs" / "psg_metadata.json"
+DEFAULT_CATEGORY_MAPPING = REPO_ROOT / "configs" / "updated_category_mapping.json"
+DEFAULT_VQA_METADATA = REPO_ROOT / "configs" / "vqa_metadata.json"
+DEFAULT_VQA_SYNONYMS = REPO_ROOT / "configs" / "vqa_synonyms.json"
+DEFAULT_VQA_TEMPLATES = REPO_ROOT / "scripts" / "evaluation" / "question_generation" / "templates"
 
 # Conda environment names (matching setup.sh / setup_v2.sh)
 ENV_KMAX = "kmax_env"
@@ -647,7 +648,7 @@ def step_1_segmentation_gt(args, run_dir: Path) -> Tuple[str, List[str], str]:
     return (
         "Segmentation (GT)",
         [
-            "python", "benchmark/scripts/pipeline/generate_segmasks_kmax.py",
+            "python", "scripts/pipeline/generate_segmasks_kmax.py",
             "--img-dir", str(args.images),
             "--out-dir", str(out_dir),
             "--psg-meta", str(args.psg_meta),
@@ -666,7 +667,7 @@ def step_2_scene_graph_gt(args, run_dir: Path) -> Tuple[str, List[str], str]:
     return (
         "Scene Graph Generation (GT)",
         [
-            "python", "benchmark/scripts/pipeline/generate_sg.py",
+            "python", "scripts/pipeline/generate_sg.py",
             "--img-dir", str(args.images),
             "--out-dir", str(out_dir),
             "--psg-meta", str(args.psg_meta),
@@ -685,7 +686,7 @@ def step_3_clean_refine_gt(args, run_dir: Path) -> Tuple[str, List[str], str]:
     return (
         "Clean & Refine Relations (GT)",
         [
-            "python", "benchmark/scripts/pipeline/clean_and_refine_relations.py",
+            "python", "scripts/pipeline/clean_and_refine_relations.py",
             "--input", str(sg_pkl),
             "--images", str(args.images),
             "--output", str(out_dir),
@@ -704,7 +705,7 @@ def step_4_graph_merge_gt(args, run_dir: Path) -> Tuple[str, List[str], str]:
     clean_dir = run_dir / DIR_NAMES[3]
     out_dir = ensure_dir(run_dir / DIR_NAMES[4])
     cmd = [
-        "python", "benchmark/scripts/pipeline/run_graph_merge.py",
+        "python", "scripts/pipeline/run_graph_merge.py",
         "--anno-json", str(anno_path),
         "--scene-graph-pkl", str(sg_pkl),
         "--out-dir", str(out_dir),
@@ -730,7 +731,7 @@ def step_5_attributes_gt(args, run_dir: Path) -> Tuple[str, List[str], str]:
     return (
         "Attribute Generation (GT)",
         [
-            "python", "benchmark/scripts/pipeline/generate_attributes.py",
+            "python", "scripts/pipeline/generate_attributes.py",
             "--img-dir", str(args.images),
             "--output-dir", str(out_dir),
             "--anno-json", str(anno_json),
@@ -748,7 +749,7 @@ def step_6_prompt_generation(args, run_dir: Path) -> Tuple[str, List[str], str]:
     """Generate text prompts from GT scene graphs + attributes."""
     ensure_dir(run_dir / DIR_NAMES[6])
     cmd = [
-        "python", "benchmark/scripts/pipeline/generate_prompts.py",
+        "python", "scripts/pipeline/generate_prompts.py",
         "--run_dir", str(run_dir),
     ]
     if args.refine_objects:
@@ -777,7 +778,7 @@ def step_7_question_generation(args, run_dir: Path) -> Tuple[str, List[str], str
     return (
         "Question Generation",
         [
-            "python", "benchmark/scripts/evaluation/question_generation/generate_questions.py",
+            "python", "scripts/evaluation/question_generation/generate_questions.py",
             "--validated_relations_dir", str(sg_with_attrs),
             "--metadata_file", str(args.vqa_metadata),
             "--synonyms_json", str(args.vqa_synonyms),
@@ -797,7 +798,7 @@ def step_8_image_generation(args, run_dir: Path, model: str) -> Tuple[str, List[
     return (
         f"Image Generation ({model})",
         [
-            "python", "benchmark/scripts/pipeline/generate_images.py",
+            "python", "scripts/pipeline/generate_images.py",
             "--prompts-json", str(prompt_path),
             "--output-dir", str(out_dir),
             "--models", model,
@@ -813,7 +814,7 @@ def step_9_segmentation_pt(args, run_dir: Path, model: str) -> Tuple[str, List[s
     return (
         f"Segmentation (predicted, {model})",
         [
-            "python", "benchmark/scripts/pipeline/generate_segmasks_kmax.py",
+            "python", "scripts/pipeline/generate_segmasks_kmax.py",
             "--img-dir", str(img_dir),
             "--out-dir", str(out_dir),
             "--psg-meta", str(args.psg_meta),
@@ -833,7 +834,7 @@ def step_10_scene_graph_pt(args, run_dir: Path, model: str) -> Tuple[str, List[s
     return (
         f"Scene Graph Generation (predicted, {model})",
         [
-            "python", "benchmark/scripts/pipeline/generate_sg.py",
+            "python", "scripts/pipeline/generate_sg.py",
             "--img-dir", str(img_dir),
             "--out-dir", str(out_dir),
             "--psg-meta", str(args.psg_meta),
@@ -853,7 +854,7 @@ def step_11_clean_refine_pt(args, run_dir: Path, model: str) -> Tuple[str, List[
     return (
         f"Clean & Refine Relations (predicted, {model})",
         [
-            "python", "benchmark/scripts/pipeline/clean_and_refine_relations.py",
+            "python", "scripts/pipeline/clean_and_refine_relations.py",
             "--input", str(sg_pkl),
             "--images", str(img_dir),
             "--output", str(out_dir),
@@ -873,7 +874,7 @@ def step_12_graph_merge_pt(args, run_dir: Path, model: str) -> Tuple[str, List[s
     clean_dir = run_dir / DIR_NAMES[11] / model
     out_dir = ensure_dir(run_dir / DIR_NAMES[12] / model)
     cmd = [
-        "python", "benchmark/scripts/pipeline/run_graph_merge.py",
+        "python", "scripts/pipeline/run_graph_merge.py",
         "--anno-json", str(anno_path),
         "--scene-graph-pkl", str(sg_pkl),
         "--out-dir", str(out_dir),
@@ -900,7 +901,7 @@ def step_13_attributes_pt(args, run_dir: Path, model: str) -> Tuple[str, List[st
     return (
         f"Attribute Generation (predicted, {model})",
         [
-            "python", "benchmark/scripts/pipeline/generate_attributes.py",
+            "python", "scripts/pipeline/generate_attributes.py",
             "--img-dir", str(img_dir),
             "--output-dir", str(out_dir),
             "--anno-json", str(anno_json),
@@ -923,7 +924,7 @@ def step_14_graph_matching(args, run_dir: Path, model: str) -> Tuple[str, List[s
     pred_attr_file = run_dir / DIR_NAMES[13] / model / "attributes.json"
     out_dir = ensure_dir(run_dir / DIR_NAMES[14] / model)
     cmd = [
-        "python", "benchmark/scripts/pipeline/run_graph_matching.py",
+        "python", "scripts/pipeline/run_graph_matching.py",
         "--gt-sg-dir", str(gt_sg_dir),
         "--gt-attr-file", str(gt_attr_file),
         "--pred-sg-dir", str(pred_sg_dir),
@@ -950,7 +951,7 @@ def step_15_sg_eval(args, run_dir: Path, model: str) -> Tuple[str, List[str], st
     return (
         f"Scene Graph Eval / IGE ({model})",
         [
-            "python", "benchmark/scripts/evaluation/image_generation_eval.py",
+            "python", "scripts/evaluation/image_generation_eval.py",
             "--questions", str(questions_file),
             "--matched-graphs", str(matched_graphs),
             "--matching-graphs", str(matching_graphs),
@@ -970,7 +971,7 @@ def step_16_llm_judge_sg(args, run_dir: Path, model: str) -> Tuple[str, List[str
     return (
         f"LLM Judge - SG ({model})",
         [
-            "python", "benchmark/scripts/evaluation/llm_judge.py",
+            "python", "scripts/evaluation/llm_judge.py",
             "--pred_jsonl", str(pred_jsonl),
             "--out_scored_jsonl", str(out_scored),
             "--out_metrics", str(out_metrics),
@@ -990,7 +991,7 @@ def step_17_vqa_generation(args, run_dir: Path, model: str) -> Tuple[str, List[s
     return (
         f"VQA Generation ({model})",
         [
-            "python", "benchmark/scripts/evaluation/run_vqa_benchmark.py",
+            "python", "scripts/evaluation/run_vqa_benchmark.py",
             "--generated_questions", str(questions_file),
             "--image_dir", str(img_dir),
             "--output_dir", str(out_dir),
@@ -1010,7 +1011,7 @@ def step_18_vqa_merge(args, run_dir: Path, model: str) -> Tuple[str, List[str], 
     return (
         f"VQA Merge ({model})",
         [
-            "python", "benchmark/scripts/evaluation/merge_results.py",
+            "python", "scripts/evaluation/merge_results.py",
             "--gt_index", gt_pattern,
             "--pred_files", pred_pattern,
             "--output", str(merged_output),
@@ -1028,7 +1029,7 @@ def step_19_llm_judge_vqa(args, run_dir: Path, model: str) -> Tuple[str, List[st
     return (
         f"LLM Judge - VQA ({model})",
         [
-            "python", "benchmark/scripts/evaluation/llm_judge.py",
+            "python", "scripts/evaluation/llm_judge.py",
             "--pred_jsonl", str(pred_jsonl),
             "--out_scored_jsonl", str(out_scored),
             "--out_metrics", str(out_metrics),

@@ -8,18 +8,18 @@ curr_dir = Path(__file__).resolve().parent
 repo_root = curr_dir.parent
 sys.path.insert(0, str(repo_root))
 
-from benchmark.core.pipeline import Pipeline, PipelineStep
-from benchmark.core.config import Config
-from benchmark.core.slurm import SlurmJobManager
+from core.pipeline import Pipeline, PipelineStep
+from core.config import Config
+from core.slurm import SlurmJobManager
 
 # Import steps
-from benchmark.steps.gt_steps import (
+from steps.gt_steps import (
     SegmentationStep, SceneGraphGenerationStep, GraphMergingStep, 
     AttributeGenerationStep, GraphMatchingStep, PromptGenerationStep,
     CleanAndRefineRelationsStep
 )
-from benchmark.steps.eval_steps import ImageGenerationStep
-from benchmark.steps.judge_steps import SceneGraphEvalStep, VQAGenerationStep, VQAMergeStep, LLMJudgeStep, QuestionGenerationStep
+from steps.eval_steps import ImageGenerationStep
+from steps.judge_steps import SceneGraphEvalStep, VQAGenerationStep, VQAMergeStep, LLMJudgeStep, QuestionGenerationStep
 
 def parse_steps(steps_str: str) -> List[int]:
     steps = []

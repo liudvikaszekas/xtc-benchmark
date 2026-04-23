@@ -19,7 +19,7 @@ This fetches required code in `submodules/` (for example `kmax-deeplab`, `panopt
 2. Run core setup (creates conda envs and auto-downloads required core weights):
 
 ```bash
-./setup/setup.sh --install-target temporary --recreate
+./setup/setup.sh --install-target temporary --run-tag xtc_core --recreate
 ```
 
 This creates isolated conda environments under `.tmp/distros/...`, initializes dependencies, downloads required core model artifacts, and prints a `conda_init.sh` helper path for config wiring.
@@ -27,7 +27,7 @@ This creates isolated conda environments under `.tmp/distros/...`, initializes d
 3. Install baseline generation stack for a JanusPro-only run:
 
 ```bash
-SKIP_MODELS="blip3o,showo,showo2,mmada,omnigen2,tar,bagel,emu3" ./setup/setup_baselines.sh --recreate
+SKIP_MODELS="blip3o,showo,showo2,mmada,omnigen2,tar,bagel,emu3" ./setup/setup_baselines.sh --recreate  --conda-distro-tag xtc_core
 ```
 
 This prepares the baseline environment and downloads JanusPro while skipping other baseline model downloads.

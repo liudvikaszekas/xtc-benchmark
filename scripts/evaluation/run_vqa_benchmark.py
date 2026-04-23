@@ -17,8 +17,8 @@ if not (UNIVLM_EVAL_PATH / "roundtrip_factory.py").exists():
     )
 sys.path.insert(0, str(UNIVLM_EVAL_PATH.resolve()))
 
-from benchmark.scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_all_models
-from benchmark.scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_model_multi_gpu
+from scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_all_models
+from scripts.evaluation.univlm_eval.answer_image_questions_all_models import answer_questions_for_model_multi_gpu
 import torch
 
 

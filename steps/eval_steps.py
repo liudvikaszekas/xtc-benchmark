@@ -13,7 +13,7 @@ class ImageGenerationStep(PipelineStep):
         self.num_splits = num_splits
     
     def get_command(self, run_dir: Path) -> List[str]:
-        script_path = "benchmark/scripts/pipeline/generate_images.py"
+        script_path = "scripts/pipeline/generate_images.py"
         prompt_path = run_dir / "6_prompt_generation/prompts.json"
         out_dir = run_dir / "7_images" / self.model_name
         

@@ -1,3 +1,8 @@
 setup/debug/
 weights/
 datasets/
+outputs/
+full_workflow/
+logs/
+.tmp/
+*.pyc

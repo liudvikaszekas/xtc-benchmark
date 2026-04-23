@@ -4,16 +4,20 @@ set -eo pipefail
 
 usage() {
     cat <<'EOF'
-Usage: setup/setup_baselines.sh [--recreate]
+Usage: setup/setup_baselines.sh [options]
 
 Sets up the baseline generation stack used by benchmark image generation models
 (BLIP3o, Show-o/Show-o2, MMaDA, JanusPro, TAR, Bagel, OmniGen2).
+
+Options:
+  --recreate             Remove and recreate the conda environment if it exists.
+  --conda-distro-tag TAG Optional tag to look for a local miniconda install in .tmp/distros/<TAG>.
 
 Environment overrides:
   BASE_STORAGE           Root for env/cache/models (default: <repo>/.tmp/baselines)
   CONDA_ENV_PATH         Baseline conda env path (default: $BASE_STORAGE/envs/univlm)
   ENV_YAML               Conda YAML to create env (default: setup/environments/univlm_env.yml)
-    UNIVLM_PATH            UniVLM checkout path (default: submodules/univlm)
+  UNIVLM_PATH            UniVLM checkout path (default: submodules/univlm)
   PIPELINE_DIR           Pipeline scripts path (default: scripts/pipeline)
   MODELS_DIR             Models storage dir (default: $BASE_STORAGE/models)
   HF_HOME                HF cache (default: $BASE_STORAGE/hf_cache)
@@ -31,13 +35,33 @@ EOF
 }
 
 RECREATE=0
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    usage
-    exit 0
-fi
-if [[ "${1:-}" == "--recreate" ]]; then
-    RECREATE=1
-fi
+CONDA_DISTRO_TAG="${CONDA_DISTRO_TAG:-}"
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --recreate)
+            RECREATE=1
+            shift
+            ;;
+        --conda-distro-tag)
+            if [[ $# -lt 2 ]]; then
+                echo "--conda-distro-tag requires a value" >&2
+                exit 1
+            fi
+            CONDA_DISTRO_TAG="$2"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1" >&2
+            usage
+            exit 1
+            ;;
+    esac
+done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -81,14 +105,17 @@ if [[ -z "${SHOWO2_CONFIG_TEMPLATE:-}" && -f "${UNIVLM_PATH}/configs/showo2_conf
 fi
 
 echo "=== Resolving conda ==="
-if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+if [[ -n "${CONDA_DISTRO_TAG}" && -f "${REPO_ROOT}/.tmp/distros/${CONDA_DISTRO_TAG}/miniconda3/etc/profile.d/conda.sh" ]]; then
+    # shellcheck disable=SC1091
+    source "${REPO_ROOT}/.tmp/distros/${CONDA_DISTRO_TAG}/miniconda3/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
     # shellcheck disable=SC1091
     source "$HOME/miniconda3/etc/profile.d/conda.sh"
 elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
     # shellcheck disable=SC1091
     source "$HOME/anaconda3/etc/profile.d/conda.sh"
 else
-    echo "Could not find conda.sh under ~/miniconda3 or ~/anaconda3" >&2
+    echo "Could not find conda.sh under ~/miniconda3, ~/anaconda3, or local distro tag '${CONDA_DISTRO_TAG}'" >&2
     exit 1
 fi
 
