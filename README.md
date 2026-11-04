@@ -39,13 +39,13 @@
   <img src="assets/framework.png" alt="Overview of the XTC-Bench evaluation framework" width="85%">
 </p>
 
-Unified Multimodal Models (uMMs) aim to support both visual understanding and visual generation within a shared representation, yet existing protocols evaluate the two capabilities independently. **XTC-Bench is a scene-graph-grounded evaluation framework that measures cross-task visual semantic consistency.** Generation prompts and understanding queries are derived from the same scene graph, which enables fact-level comparison across objects, attributes, and relations. **Our metric, Continuous Cross-Task Agreement (CCTA), quantifies agreement between generation and understanding over matched atomic facts**, isolating internal consistency from standalone task accuracy.
+Unified Multimodal Models (uMMs) aim to support both visual understanding and visual generation within a shared representation, yet existing protocols evaluate the two capabilities independently. **XTC-Bench is a scene-graph-grounded evaluation framework that measures cross-task semantic consistency.** From a reference scene graph, we derive a generation prompt and fact-aligned understanding queries, which makes the two task outputs directly comparable across objects, attributes, and relations. **Our metric, Semantic Agreement (SA), compares the generation-side and understanding-side answers with each other** rather than only against the reference.
 
 **Highlights**
 
-- 📊 **2,000 curated images and 31,530 facts** from COCO and Visual Genome, with precomputed scene graphs, prompts, and questions on [Hugging Face](https://huggingface.co/datasets/XTC-Bench/xtc-dataset)
+- 📊 **1,970 curated scenes and 31,735 atomic facts** from COCO and Visual Genome, with one fact-aligned VQA pair per fact, available on [Hugging Face](https://huggingface.co/datasets/XTC-Bench/xtc-dataset)
 - 🤖 **8 open-source unified models** ready to run, plus GPT and Gemini as commercial references in the paper
-- 🔍 **Fine-grained diagnostics** for objects, attributes, and relations, using four scores: Generation, Understanding, CCTA, and AW-CCTA
+- 🔍 **Fine-grained diagnostics** that separate agreement from correctness and show how models fail: shared errors, contradictions, one-sided answers, or missing responses
 - ⚙️ **End-to-end pipeline** that runs on a single machine or on a SLURM cluster
 
 ## 🔥 News
@@ -70,24 +70,34 @@ Unified Multimodal Models (uMMs) aim to support both visual understanding and vi
 
 ### Why cross-task consistency?
 
-A model that is good at each task separately can still contradict itself. These two examples show the same model succeeding at one task and failing at the other on the same kind of fact.
+A model that is good at each task separately can still contradict itself. Each example below evaluates one model on one atomic fact across both tasks.
 
 <p align="center">
   <img src="assets/motivation_omnigen.png" alt="OmniGen generates the correct car color but fails to recognize it" width="75%">
   <br>
   <img src="assets/motivation_bagel.png" alt="BAGEL recognizes the boat viewpoint but fails to render it" width="75%">
   <br>
-  <em>OmniGen can generate attribute details while failing to recognize them (top), whereas BAGEL understands relational viewpoints that it fails to render (bottom).</em>
+  <em>Top: OmniGen-2 renders the car color as white and silver but answers the corresponding color question as blue. Bottom: BAGEL-7B recognizes the boat viewpoint as from the back but fails to render that viewpoint.</em>
 </p>
 
 ### Metrics
 
 | Metric | What it measures |
 | :--- | :--- |
-| **Generation (G)** | How faithfully generated images reflect the reference scene graph, scored with an LLM-as-judge protocol |
+| **Generation (G)** | How faithfully generated images express the reference facts, scored with an LLM-as-judge protocol |
 | **Understanding (U)** | VQA performance on questions derived from the same scene graph |
-| **CCTA** | Semantic agreement between generation and understanding over matched atomic facts |
-| **AW-CCTA** | Accuracy-weighted CCTA, which separates models that are consistently right from models that are consistently wrong |
+| **Semantic Agreement (SA)** | The share of facts on which generation and understanding give the same answer, whether both are correct or both make the same error |
+| **CCTA / AW-CCTA** | Baselines that compare task-wise correctness scores rather than the answers themselves |
+
+Every fact falls into exactly one outcome:
+
+| Outcome | Condition | Counts as agreement |
+| :--- | :--- | :-: |
+| **Missing** | Either side has no response | ✗ |
+| **Same-correct** | Both answers are correct | ✓ |
+| **Same-wrong** | Both are wrong, with the same meaning | ✓ |
+| **Different-wrong** | Both are wrong, and they contradict each other | ✗ |
+| **One-sided** | Only one answer is correct | ✗ |
 
 ### Reference scene graphs
 
@@ -99,104 +109,125 @@ Each reference image passes through three stages: scene graph generation with kM
 
 ## 📈 Results
 
-Benchmark results from the paper, sorted by AW-CCTA. Higher is better, and the best score in each column is in bold. Please refer to [our paper](https://arxiv.org/abs/2604.25072) for the full analysis.
+> [!NOTE]
+> These are the results of the WACV 2027 version. The [arXiv v1](https://arxiv.org/abs/2604.25072) from April 2026 reports earlier results, with CCTA as its main metric.
 
-| Model | Architecture | Generation | Understanding | CCTA | AW-CCTA |
-| :--- | :--- | :-: | :-: | :-: | :-: |
-| Gemini-2.5 Flash | Commercial | 0.795 | **0.740** | **0.706** | **0.623** |
-| BAGEL-7B | AR+Diffusion | 0.725 | 0.724 | 0.675 | 0.569 |
-| BLIP3-o-8B | Pure AR | 0.545 | 0.692 | 0.598 | 0.423 |
-| Janus-Pro-7B | Pure AR | 0.499 | 0.681 | 0.573 | 0.390 |
-| OmniGen-2 | Pure AR | 0.499 | 0.659 | 0.585 | 0.377 |
-| Tar-7B | Pure AR | 0.518 | 0.580 | 0.600 | 0.358 |
-| Show-o-2-7B | AR+Diffusion | 0.465 | 0.605 | 0.582 | 0.333 |
-| MMaDA-8B | Pure Diffusion | 0.265 | 0.380 | 0.630 | 0.144 |
-| Show-o | AR+Diffusion | 0.060 | 0.503 | 0.509 | 0.054 |
-| GPT-5 / GPT-Image-1.5<sup>†</sup> | Commercial | **0.804** | 0.684 | – | – |
+All scores are averaged over all reference facts, so facts that a model does not express count against it. Higher is better. Models are sorted by SA within each group, and the best open-source score in each column is in bold.
 
-<sub>† Reported for Generation and Understanding only, as a strong reference for the two standalone tasks.</sub>
+| Model | Generation | Fact Coverage | Understanding | SA | AW-SA |
+| :--- | :-: | :-: | :-: | :-: | :-: |
+| GPT-5 / GPT-Image-1.5<sup>†</sup> | 0.804 | 89.0% | 0.684 | 0.717 | 0.675 |
+| Gemini-2.5 Flash | 0.795 | 87.6% | 0.740 | 0.694 | 0.689 |
+| BAGEL-7B | **0.739** | **77.9%** | **0.729** | **0.593** | **0.554** |
+| Show-o-2-7B | 0.673 | 70.2% | 0.604 | 0.498 | 0.440 |
+| Janus-Pro-7B | 0.630 | 66.1% | 0.671 | 0.496 | 0.460 |
+| OmniGen-2 | 0.616 | 56.9% | 0.610 | 0.478 | 0.456 |
+| BLIP3-o-8B | 0.622 | 67.2% | 0.630 | 0.468 | 0.433 |
+| Tar-7B | 0.624 | 65.7% | 0.580 | 0.430 | 0.389 |
+| MMaDA-8B | 0.408 | 44.1% | 0.378 | 0.246 | 0.211 |
+| Show-o | 0.134 | 14.9% | 0.373 | 0.094 | 0.080 |
+
+<sub>† A composed reference of two separate models, so its SA is not interpreted as self-consistency. Commercial systems are excluded from open-source statistics.</sub>
+
+<p align="center">
+  <img src="assets/generation_understanding_sa.png" alt="Generation versus understanding performance for the open-source models, colored by Semantic Agreement" width="60%">
+  <br>
+  <em>Generation and understanding performance, colored by SA.</em>
+</p>
 
 ### Key findings
 
-- **Consistency remains an open problem.** The strongest CCTA reaches only 0.706, and the best open-source model, BAGEL-7B, reaches 0.675.
-- **Accuracy does not imply consistency.** Janus-Pro-7B ranks third among open-source models on understanding but second to last on CCTA.
-- **Models can be consistently wrong.** MMaDA-8B has the second-highest open-source CCTA (0.630) but a low AW-CCTA (0.144), which reveals consistent hallucination.
-- **Understanding usually leads generation.** Seven of the eight open-source models score higher on understanding than on generation.
-- **Unification alone is not enough.** Consistency is governed by how tightly learning objectives are coupled across modalities, not by architectural unification alone.
+- **Disagreement is the norm.** Open-source SA ranges from 0.09 to 0.59, and seven of the eight models agree with themselves on fewer than half of all facts.
+- **It persists at commercial scale.** Gemini-2.5 Flash, the native commercial model, reaches only 0.694.
+- **Models contradict themselves.** When both tasks answer incorrectly, the two answers usually differ: different-wrong accounts for 52.7% to 75.1% of those facts.
+- **Relations are the bottleneck.** Averaged over the open-source models, SA is 0.482 for objects, 0.435 for attributes, and 0.321 for relations.
+- **Score-based metrics overstate consistency.** CCTA overstates SA by 1.3× for BAGEL-7B and up to 9.0× for Show-o. OmniGen-2 has the highest CCTA but ranks fifth on SA.
 
 <details>
-<summary><b>Generation scores in detail</b> (click to expand)</summary>
+<summary><b>Generation and understanding in detail</b> (click to expand)</summary>
 
-| Model | Overall | Matched Nodes | Attr. | Rel. | Matched Attr. | Matched Rel. |
-| :--- | :-: | :-: | :-: | :-: | :-: | :-: |
-| GPT-5 / GPT-Image-1.5 | 0.804 | 89.0% | 0.850 | 0.757 | 0.889 | 0.917 |
-| Gemini-2.5 Flash | 0.795 | 87.6% | 0.842 | 0.749 | 0.888 | 0.906 |
-| BLIP3-o-8B | 0.545 | 67.9% | 0.591 | 0.502 | 0.716 | 0.896 |
-| Tar-7B | 0.518 | 62.5% | 0.564 | 0.479 | 0.743 | 0.902 |
-| Janus-Pro-7B | 0.499 | 62.2% | 0.557 | 0.455 | 0.799 | 0.908 |
-| OmniGen-2 | 0.499 | 80.1% | 0.593 | 0.411 | 0.867 | 0.909 |
-| Show-o | 0.060 | 14.3% | 0.083 | 0.041 | 0.703 | 0.893 |
-| Show-o-2-7B | 0.465 | 62.3% | 0.534 | 0.411 | 0.829 | 0.848 |
-| BAGEL-7B | 0.725 | 79.3% | 0.782 | 0.670 | 0.855 | 0.912 |
-| MMaDA-8B | 0.265 | 39.1% | 0.347 | 0.201 | 0.713 | 0.871 |
+| Model | G All | Fact Cov. | G Obj | G Attr | G Rel | U All | U Obj | U Attr | U Rel |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| GPT-5 / GPT-Image-1.5 | .804 | 89.0% | .902 | .850 | .757 | .684 | .718 | .700 | .658 |
+| Gemini-2.5 Flash | .795 | 87.6% | .889 | .842 | .749 | .740 | .686 | .708 | .789 |
+| BAGEL-7B | .739 | 77.9% | .893 | .731 | .604 | .729 | .719 | .699 | .764 |
+| Show-o-2-7B | .673 | 70.2% | .845 | .647 | .532 | .604 | .603 | .646 | .555 |
+| Janus-Pro-7B | .630 | 66.1% | .813 | .571 | .506 | .671 | .627 | .633 | .743 |
+| Tar-7B | .624 | 65.7% | .803 | .565 | .508 | .580 | .551 | .568 | .614 |
+| BLIP3-o-8B | .622 | 67.2% | .807 | .551 | .518 | .630 | .578 | .586 | .713 |
+| OmniGen-2 | .616 | 56.9% | .748 | .611 | .491 | .610 | .594 | .588 | .634 |
+| MMaDA-8B | .408 | 44.1% | .599 | .369 | .264 | .378 | .417 | .432 | .281 |
+| Show-o | .134 | 14.9% | .223 | .123 | .059 | .373 | .250 | .390 | .467 |
 
 </details>
 
 <details>
-<summary><b>Understanding scores in detail</b> (click to expand)</summary>
+<summary><b>Semantic Agreement per dataset</b> (click to expand)</summary>
 
-| Model | Overall | Obj. Retr. | Attr. Query | Rel. Query | Matched Attr. | Matched Rel. |
-| :--- | :-: | :-: | :-: | :-: | :-: | :-: |
-| GPT-5 / GPT-Image-1.5 | 0.684 | 0.718 | 0.700 | 0.658 | 0.702 | 0.662 |
-| Gemini-2.5 Flash | 0.740 | 0.686 | 0.708 | 0.789 | 0.710 | 0.793 |
-| BLIP3-o-8B | 0.692 | 0.679 | 0.677 | 0.709 | 0.688 | 0.740 |
-| Tar-7B | 0.580 | 0.557 | 0.591 | 0.580 | 0.612 | 0.615 |
-| Janus-Pro-7B | 0.681 | 0.616 | 0.665 | 0.719 | 0.682 | 0.745 |
-| OmniGen-2 | 0.659 | 0.672 | 0.666 | 0.649 | 0.688 | 0.695 |
-| Show-o | 0.503 | 0.415 | 0.579 | 0.467 | 0.632 | 0.582 |
-| Show-o-2-7B | 0.605 | 0.583 | 0.664 | 0.560 | 0.677 | 0.589 |
-| BAGEL-7B | 0.724 | 0.674 | 0.704 | 0.759 | 0.711 | 0.767 |
-| MMaDA-8B | 0.380 | 0.377 | 0.484 | 0.289 | 0.515 | 0.330 |
+Brackets are 95% bootstrap confidence intervals over scenes.
 
-</details>
-
-<details>
-<summary><b>Consistency scores in detail</b> (click to expand)</summary>
-
-| Model | CCTA | CCTA Attr. | CCTA Rel. | AW-CCTA | AW-CCTA Attr. | AW-CCTA Rel. |
-| :--- | :-: | :-: | :-: | :-: | :-: | :-: |
-| Gemini-2.5 Flash | 0.706 | 0.708 | 0.705 | 0.623 | 0.620 | 0.625 |
-| BLIP3-o-8B | 0.598 | 0.625 | 0.573 | 0.423 | 0.448 | 0.400 |
-| Tar-7B | 0.600 | 0.630 | 0.574 | 0.358 | 0.394 | 0.327 |
-| Janus-Pro-7B | 0.573 | 0.610 | 0.544 | 0.390 | 0.415 | 0.370 |
-| OmniGen-2 | 0.585 | 0.615 | 0.557 | 0.377 | 0.439 | 0.320 |
-| Show-o | 0.509 | 0.461 | 0.548 | 0.054 | 0.068 | 0.042 |
-| Show-o-2-7B | 0.582 | 0.592 | 0.574 | 0.333 | 0.395 | 0.285 |
-| BAGEL-7B | 0.675 | 0.696 | 0.654 | 0.569 | 0.588 | 0.550 |
-| MMaDA-8B | 0.630 | 0.590 | 0.662 | 0.144 | 0.215 | 0.088 |
+| Model | SA All | COCO | Visual Genome | AW-SA |
+| :--- | :-: | :-: | :-: | :-: |
+| GPT-5 / GPT-Image-1.5 | .717 | .711 | .723 | .675 |
+| Gemini-2.5 Flash | .694 | .683 | .705 | .689 |
+| BAGEL-7B | .593 | .584 [.571, .597] | .602 [.587, .615] | .554 |
+| Show-o-2-7B | .498 | .473 [.459, .487] | .524 [.510, .538] | .440 |
+| Janus-Pro-7B | .496 | .469 [.455, .483] | .524 [.509, .538] | .460 |
+| OmniGen-2 | .478 | .445 [.426, .463] | .512 [.495, .529] | .456 |
+| BLIP3-o-8B | .468 | .444 [.430, .459] | .492 [.475, .506] | .433 |
+| Tar-7B | .430 | .414 [.401, .428] | .445 [.431, .459] | .389 |
+| MMaDA-8B | .246 | .228 [.216, .241] | .264 [.251, .277] | .211 |
+| Show-o | .094 | .090 [.081, .100] | .097 [.088, .107] | .080 |
 
 </details>
 
 <details>
-<summary><b>Architecture family averages</b> (click to expand)</summary>
+<summary><b>How models fail: outcomes per fact</b> (click to expand)</summary>
 
-| Family | Mean G | Mean U | G–U Gap | Mean CCTA | Mean AW-CCTA |
+Percent of reference facts, pooled across COCO and Visual Genome. **Contradicted** is the share of both-wrong facts that are different-wrong.
+
+| Model | Same-correct | Same-wrong | Different-wrong | One-sided | Missing | Contradicted |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: |
+| GPT-5 / GPT-Image-1.5 | 54.2 | 2.4 | 4.9 | 22.1 | 16.4 | 67.2 |
+| Gemini-2.5 Flash | 54.4 | 1.8 | 3.2 | 19.5 | 21.1 | 64.1 |
+| BAGEL-7B | 50.6 | 3.3 | 3.7 | 20.4 | 22.1 | 52.7 |
+| Show-o-2-7B | 38.6 | 3.4 | 5.5 | 22.6 | 29.9 | 61.9 |
+| Janus-Pro-7B | 38.6 | 3.0 | 6.0 | 18.4 | 34.0 | 66.6 |
+| BLIP3-o-8B | 37.0 | 4.8 | 6.2 | 19.1 | 32.9 | 56.2 |
+| OmniGen-2 | 36.7 | 2.3 | 2.8 | 14.8 | 43.3 | 55.1 |
+| Tar-7B | 32.8 | 3.7 | 6.9 | 22.3 | 34.4 | 65.1 |
+| MMaDA-8B | 16.0 | 2.5 | 7.5 | 18.0 | 56.0 | 75.1 |
+| Show-o | 6.1 | 1.0 | 2.9 | 4.9 | 85.1 | 73.6 |
+
+</details>
+
+<details>
+<summary><b>Comparison with CCTA and AW-CCTA</b> (click to expand)</summary>
+
+These scores are computed on identical records, pooled per fact over both datasets. This aggregation differs from the tables above, so SA values differ from the main table.
+
+| Model | CCTA | AW-CCTA | SA | AW-SA | CCTA / SA |
 | :--- | :-: | :-: | :-: | :-: | :-: |
-| Pure Diffusion (MMaDA) | 0.265 | 0.380 | −0.115 | 0.630 | 0.144 |
-| AR+Diffusion (Show-o, Show-o2, BAGEL) | 0.417 | 0.611 | −0.194 | 0.589 | 0.319 |
-| Pure AR (OmniGen-2, BLIP3-o, Janus-Pro, Tar) | 0.515 | 0.653 | −0.138 | 0.589 | 0.387 |
+| OmniGen-2 | .764 | .391 | .390 | .367 | 2.0× |
+| BAGEL-7B | .681 | .536 | .538 | .506 | 1.3× |
+| MMaDA-8B | .676 | .184 | .185 | .160 | 3.7× |
+| Show-o-2-7B | .671 | .421 | .420 | .386 | 1.6× |
+| BLIP3-o-8B | .666 | .405 | .418 | .370 | 1.6× |
+| Janus-Pro-7B | .639 | .415 | .416 | .386 | 1.5× |
+| Tar-7B | .638 | .370 | .364 | .328 | 1.7× |
+| Show-o | .636 | .080 | .071 | .061 | 9.0× |
 
 </details>
 
 ## 📦 Dataset
 
-The benchmark is built from images sampled from the COCO 2017 validation set and Visual Genome. The ground-truth bundles are available on [Hugging Face](https://huggingface.co/datasets/XTC-Bench/xtc-dataset) (about 6.4 GB).
+The benchmark is built from images sampled from the COCO 2017 validation set and Visual Genome. The ground-truth bundles are available on [Hugging Face](https://huggingface.co/datasets/XTC-Bench/xtc-dataset) (about 6.4 GB). Each bundle holds 1,000 images, of which 985 have scored facts.
 
-| Dataset | Images | Facts | Avg. Obj/Img | Avg. Rel/Img | Avg. Attr/Img | Obj. Retr. | Attr. Query | Rel. Query |
-| :--- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| COCO | 1,000 | 16,618 | 10.48 | 16.84 | 8.03 | 15.9% | 39.5% | 44.6% |
-| Visual Genome | 1,000 | 14,912 | 8.22 | 11.70 | 6.76 | 16.1% | 39.3% | 44.6% |
-| **Total** | **2,000** | **31,530** | | | | | | |
+| Dataset | Scenes | Scored Facts | Facts/Scene | Obj/Scene | Rel/Scene | Attr/Scene | Obj. Retr. | Attr. Query | Rel. Query |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| COCO | 985 | 16,517 | 16.77 | 10.48 | 16.84 | 8.03 | 15.8% | 39.1% | 45.1% |
+| Visual Genome | 985 | 15,218 | 15.45 | 8.22 | 11.70 | 6.76 | 16.1% | 40.0% | 43.9% |
+| **Total** | **1,970** | **31,735** | 16.11 | 9.35 | 14.27 | 7.40 | 15.9% | 39.5% | 44.6% |
 
 ## 🚀 Quick Start
 
@@ -205,7 +236,9 @@ This is the fastest path to a local end-to-end run. It evaluates one model (`jan
 **Requirements:** Linux with bash, conda, and an NVIDIA GPU.
 
 > [!NOTE]
-> The quickstart config uses smaller judge and VLM models (Qwen2.5). The paper uses Qwen3-235B as the judge, so quickstart scores are not directly comparable to the table above. To change the models, see [Sequential mode](#sequential-mode-single-machine).
+> The pipeline currently reports Generation, Understanding, CCTA, and AW-CCTA. The code for Semantic Agreement is not in this repository yet.
+>
+> The quickstart config uses smaller judge and VLM models (Qwen2.5). The paper uses Qwen3-235B as the judge, so quickstart scores are not directly comparable to the results above. To change the models, see [Sequential mode](#sequential-mode-single-machine).
 
 **1. Clone the repository with its submodules**
 
@@ -547,6 +580,6 @@ The project on which this publication is based was funded by the Federal Ministr
 For questions and bug reports, please [open an issue](https://github.com/liudvikaszekas/xtc-benchmark/issues). You can also reach us by email:
 
 - Weixing Wang: weixing.wang@hpi.de
-- Liudvikas Zekas: Liudvikas.Zekas@student.hpi.uni-potsdam.de
-- Anton Hackl: Anton.Hackl@student.hpi.uni-potsdam.de
-- Constantin Alexander Auga: Constantin.Auga@student.hpi.uni-potsdam.de
+- Liudvikas Zekas: liudvikas.zekas@student.hpi.de
+- Anton Hackl: anton.hackl@student.hpi.de
+- Constantin Alexander Auga: constantin.auga@student.hpi.de
